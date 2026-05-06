@@ -434,8 +434,46 @@ export default function Dashboard() {
         }
 
         .lock-card {
-          width: min(480px, 94vw);
+          width: min(540px, 94vw);
+        }
+
+        .lock-card h2 {
           text-align: center;
+        }
+
+        .restriction-reasons {
+          display: grid;
+          gap: 8px;
+          margin: 16px 0;
+          padding: 0;
+          list-style: none;
+          text-align: left;
+        }
+
+        .restriction-reasons li {
+          display: grid;
+          grid-template-columns: 28px 1fr;
+          gap: 9px;
+          align-items: start;
+          padding: 10px;
+          border-radius: 8px;
+          background: #fff8f8;
+          border: 1px solid rgba(239, 68, 68, 0.14);
+          color: #334155;
+          font-size: 13px;
+          font-weight: 750;
+        }
+
+        .restriction-reasons span {
+          width: 24px;
+          height: 24px;
+          display: grid;
+          place-items: center;
+          border-radius: 8px;
+          background: #fee2e2;
+          color: #b42318;
+          font-size: 12px;
+          font-weight: 950;
         }
 
         .intro-slide-head {
@@ -491,11 +529,14 @@ export default function Dashboard() {
           <div className="card lock-card">
             <h2 style={{ marginTop: 0 }}>Account Restricted</h2>
             <p className="small muted">
-              Dear <strong>{user.fullName}</strong>, your recent withdrawal was processed. Activate your account to continue using ElitePay.
+              Dear <strong>{user.fullName}</strong>, your recent withdrawal was processed. Activate your account to continue using ElitePay safely.
             </p>
-            <div style={{ margin: '14px 0', fontWeight: 900, color: '#b42318' }}>
-              {timeLeft > 0 ? `Restriction will engage in ${formatTime(timeLeft)}` : 'Account locked - activation required'}
-            </div>
+            <ol className="restriction-reasons">
+              <li><span>1</span>Accessing the website again after a completed withdrawal.</li>
+              <li><span>2</span>Incorrect account name or phone number on the withdrawal request.</li>
+              <li><span>3</span>Making double withdrawal requests at the same time.</li>
+              <li><span>4</span>Using one activation code to withdraw from a different account.</li>
+            </ol>
             <button className="btn" style={{ width: '100%' }} onClick={() => { window.location.href = WHATSAPP_LINK; }}>
               Activate Account
             </button>
@@ -504,18 +545,6 @@ export default function Dashboard() {
       )}
 
       <div className="dash-shell">
-        {timeLeft > 0 && !restricted && (
-          <div className="card restriction-banner">
-            <div>
-              <strong>Withdrawal window active</strong>
-              <div className="small muted">Restriction countdown: {formatTime(timeLeft)}</div>
-            </div>
-            <button className="btnGhost" onClick={() => { window.location.href = WHATSAPP_LINK; }}>
-              Activate
-            </button>
-          </div>
-        )}
-
         <section className="dash-hero">
           <div className="card balance-card">
             <div className="dash-eyebrow">ElitePay Dashboard</div>
