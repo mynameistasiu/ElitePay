@@ -7,6 +7,7 @@ import { loadUser } from "../utils/storage";
 
 const CODE_PRICE = 7000;
 const WA = "+2348161662371";
+const ONLINE_PAYMENT_URL = "https://www.flutterwave.com/pay/gcy5nrz2por5";
 
 function PurchaseLogo({ size = 34 }) {
   return (
@@ -15,6 +16,17 @@ function PurchaseLogo({ size = 34 }) {
       <circle cx="10" cy="20" r="1" fill="currentColor" />
       <circle cx="18" cy="20" r="1" fill="currentColor" />
       <path d="M16 10a2 2 0 1 0-4 0" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+function OnlinePaymentLogo({ size = 34 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" aria-hidden role="img">
+      <rect x="3" y="5" width="18" height="14" rx="3" stroke="currentColor" strokeWidth="1.5" />
+      <path d="M3 10h18" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+      <path d="M7 15h4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+      <path d="M16.5 15.5 18 17l3-3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }
@@ -123,6 +135,9 @@ export default function BuyCode() {
   };
 
   const openWhatsApp = () => window.open(`https://wa.me/${WA.replace("+", "")}`, "_blank", "noopener");
+  const openOnlinePayment = () => {
+    window.location.href = ONLINE_PAYMENT_URL;
+  };
 
   return (
     <Layout>
@@ -168,6 +183,53 @@ export default function BuyCode() {
                   onClick={handleBuyClick}
                 >
                   Buy Now
+                </button>
+                <button className="btn btn-secondary" onClick={openWhatsApp}>
+                  Contact Support
+                </button>
+              </div>
+            </div>
+          </motion.div>
+
+          <motion.div
+            className="card"
+            onMouseEnter={() => setSelected("online")}
+            onFocus={() => setSelected("online")}
+            whileHover={{ y: -4 }}
+            transition={{ type: "spring", stiffness: 260, damping: 24 }}
+          >
+            <div className="card-header">
+              <div className="card-icon card-icon-online">
+                <OnlinePaymentLogo size={28} />
+              </div>
+              <div>
+                <h2 className="card-title">Online Payment</h2>
+                <div className="card-subtitle">Secure card, bank, or transfer checkout</div>
+              </div>
+            </div>
+
+            <div className="card-body">
+              <p className="card-note">
+                Use the online checkout to pay through Flutterwave. After payment, return to ElitePay to continue and receive your withdrawal code.
+              </p>
+
+              <div className="price-display">
+                <span className="price-label">Amount to Pay</span>
+                <span className="price-value">₦{CODE_PRICE.toLocaleString()}</span>
+              </div>
+
+              <div className="online-features" aria-label="Online payment features">
+                <span>Secure checkout</span>
+                <span>Instant confirmation</span>
+                <span>Card or bank transfer</span>
+              </div>
+
+              <div className="card-actions">
+                <button
+                  className="btn btn-primary"
+                  onClick={openOnlinePayment}
+                >
+                  Pay Online
                 </button>
                 <button className="btn btn-secondary" onClick={openWhatsApp}>
                   Contact Support

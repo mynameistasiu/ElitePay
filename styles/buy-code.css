@@ -95,6 +95,10 @@
   flex-shrink: 0;
 }
 
+.card-icon-online {
+  background: linear-gradient(135deg, #1d7ff2, #19b9a7);
+}
+
 .card-title {
   margin: 0;
   color: #102033;
@@ -142,6 +146,26 @@
   color: #0f9f6e;
   font-size: 18px;
   font-weight: 950;
+}
+
+.online-features {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.online-features span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 38px;
+  padding: 8px;
+  border-radius: 8px;
+  background: #eef7ff;
+  color: #1f5f9f;
+  font-size: 12px;
+  font-weight: 850;
+  text-align: center;
 }
 
 .card-actions {
@@ -303,5 +327,9 @@
 
   .btn {
     width: 100%;
+  }
+
+  .online-features {
+    grid-template-columns: 1fr;
   }
 }
