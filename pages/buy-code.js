@@ -5,8 +5,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import Layout from "../components/Layout";
 import { loadUser } from "../utils/storage";
 
-const CODE_PRICE = 7000;
-const WA = "+2348161662371";
+const CODE_PRICE = 5500;
+const WA = "+2348133861975";
 const ONLINE_PAYMENT_URL = "https://www.flutterwave.com/pay/gcy5nrz2por5";
 
 function PurchaseLogo({ size = 34 }) {

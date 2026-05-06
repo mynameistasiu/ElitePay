@@ -4,8 +4,8 @@ import Layout from '../components/Layout';
 import { loadUser, loadBalance, saveBalance, saveTx } from '../utils/storage';
 import { formatNaira } from '../utils/format';
 
-const MIN_REWARD = 100000;
-const MAX_REWARD = 150000;
+const MIN_REWARD = 70000;
+const MAX_REWARD = 100000;
 const BONUS_REWARD = 5000;
 
 const phases = [
