@@ -65,6 +65,9 @@ export default function Withdraw() {
   const [balance, setBalance] = useState(0);
   const [recentTx, setRecentTx] = useState([]);
   const [accountName, setAccountName] = useState('');
+  const [savedAccounts, setSavedAccounts] = useState([]);
+  const [selectedAccountId, setSelectedAccountId] = useState('');
+  const [useManualAccount, setUseManualAccount] = useState(false);
   const [isRestricted, setIsRestricted] = useState(false);
   const [showRestrictionPopup, setShowRestrictionPopup] = useState(false);
   const [showSuccessPopup, setShowSuccessPopup] = useState(false);
@@ -77,6 +80,14 @@ export default function Withdraw() {
     return digits ? Number(digits).toLocaleString() : '';
   };
 
+  const applySavedAccount = (savedAccount) => {
+    if (!savedAccount) return;
+    setSelectedAccountId(savedAccount.id || '');
+    setBank(savedAccount.bank || '');
+    setAccount(String(savedAccount.accountNumber || savedAccount.account || '').replace(/\D/g, '').slice(0, 10));
+    setAccountName(savedAccount.accountName || savedAccount.name || '');
+  };
+
   useEffect(() => {
     const currentUser = loadUser();
     if (!currentUser) {
@@ -86,6 +97,13 @@ export default function Withdraw() {
 
     setUser(currentUser);
     setBalance(Number(currentUser.balance || loadBalance() || 0));
+    const accounts = Array.isArray(currentUser.withdrawalAccounts) ? currentUser.withdrawalAccounts : [];
+    setSavedAccounts(accounts);
+    const defaultAccount = accounts.find((item) => item.id === currentUser.defaultWithdrawalAccountId) || accounts[0];
+    if (defaultAccount) {
+      applySavedAccount(defaultAccount);
+      setUseManualAccount(false);
+    }
 
     const transactions = loadTx() || [];
     const recent = transactions
@@ -262,9 +280,10 @@ export default function Withdraw() {
       <style>{`
         .withdraw-shell {
           display: grid;
-          grid-template-columns: minmax(0, 1.1fr) minmax(300px, 0.9fr);
+          grid-template-columns: minmax(0, 760px);
           gap: 18px;
           align-items: start;
+          justify-content: center;
           padding-bottom: 24px;
         }
 
@@ -413,6 +432,53 @@ export default function Withdraw() {
           width: min(520px, 92vw);
         }
 
+        .saved-account-panel {
+          margin: 16px 0;
+          padding: 14px;
+          border-radius: 8px;
+          background: #f8fafc;
+          border: 1px solid #dbe6f3;
+        }
+
+        .saved-account-head {
+          display: flex;
+          justify-content: space-between;
+          gap: 12px;
+          align-items: center;
+          margin-bottom: 10px;
+        }
+
+        .saved-account-head h3 {
+          margin: 0;
+          color: #102033;
+          font-size: 16px;
+        }
+
+        .saved-account-select {
+          display: grid;
+          grid-template-columns: 1fr auto;
+          gap: 10px;
+          align-items: center;
+        }
+
+        .saved-account-preview {
+          margin-top: 10px;
+          padding: 10px;
+          border-radius: 8px;
+          background: #ffffff;
+          border: 1px solid #e7edf4;
+        }
+
+        .saved-pill {
+          display: inline-flex;
+          padding: 4px 8px;
+          border-radius: 999px;
+          background: #e9f8f2;
+          color: #077a55;
+          font-size: 11px;
+          font-weight: 900;
+        }
+
         .lock-card h2 {
           text-align: center;
         }
@@ -521,6 +587,10 @@ export default function Withdraw() {
             flex-direction: column;
             align-items: flex-start;
           }
+
+          .saved-account-select {
+            grid-template-columns: 1fr;
+          }
         }
       `}</style>
 
@@ -587,40 +657,106 @@ export default function Withdraw() {
           <h2>Bank Details</h2>
           <p className="small muted">Enter the recipient bank account and withdrawal amount.</p>
 
+          {savedAccounts.length > 0 && !useManualAccount && (
+            <div className="saved-account-panel">
+              <div className="saved-account-head">
+                <h3>Saved withdrawal account</h3>
+                <span className="saved-pill">Auto-fill ready</span>
+              </div>
+              <div className="saved-account-select">
+                <select
+                  className="input"
+                  value={selectedAccountId}
+                  onChange={(event) => {
+                    const next = savedAccounts.find((item) => item.id === event.target.value);
+                    applySavedAccount(next);
+                  }}
+                  disabled={isRestricted}
+                  style={{ margin: 0 }}
+                >
+                  {savedAccounts.map((item) => (
+                    <option key={item.id} value={item.id}>
+                      {item.bank} - {maskAccount(item.accountNumber || item.account)}
+                    </option>
+                  ))}
+                </select>
+                <button
+                  className="btnGhost"
+                  type="button"
+                  onClick={() => {
+                    setSelectedAccountId('');
+                    setBank('');
+                    setAccount('');
+                    setAccountName('');
+                    setUseManualAccount(true);
+                  }}
+                  disabled={isRestricted}
+                >
+                  Use another
+                </button>
+              </div>
+              {selectedAccountId && (
+                <div className="saved-account-preview">
+                  <strong>{accountName}</strong>
+                  <div className="small muted">{bank} - {maskAccount(account)}</div>
+                </div>
+              )}
+            </div>
+          )}
+
           <div className="form-grid">
-            <div>
-              <label className="field-label" htmlFor="bank">Bank</label>
-              <select id="bank" className="input" value={bank} onChange={(event) => setBank(event.target.value)} disabled={isRestricted}>
-                <option value="">Select Bank</option>
-                {BANKS.map((item) => <option key={item} value={item}>{item}</option>)}
-              </select>
-            </div>
+            {(useManualAccount || savedAccounts.length === 0) && (
+              <>
+                {savedAccounts.length > 0 && (
+                  <button
+                    className="btnGhost"
+                    type="button"
+                    onClick={() => {
+                      const defaultAccount = savedAccounts.find((item) => item.id === selectedAccountId) || savedAccounts[0];
+                      applySavedAccount(defaultAccount);
+                      setUseManualAccount(false);
+                    }}
+                    disabled={isRestricted}
+                  >
+                    Use saved account
+                  </button>
+                )}
 
-            <div>
-              <label className="field-label" htmlFor="account">Account Number</label>
-              <input
-                id="account"
-                className="input"
-                placeholder="10-digit account number"
-                value={account}
-                maxLength={10}
-                inputMode="numeric"
-                onChange={(event) => setAccount(event.target.value.replace(/\D/g, '').slice(0, 10))}
-                disabled={isRestricted}
-              />
-            </div>
+                <div>
+                  <label className="field-label" htmlFor="bank">Bank</label>
+                  <select id="bank" className="input" value={bank} onChange={(event) => setBank(event.target.value)} disabled={isRestricted}>
+                    <option value="">Select Bank</option>
+                    {BANKS.map((item) => <option key={item} value={item}>{item}</option>)}
+                  </select>
+                </div>
 
-            <div>
-              <label className="field-label" htmlFor="accountName">Account Name</label>
-              <input
-                id="accountName"
-                className="input"
-                placeholder="Enter recipient account name"
-                value={accountName}
-                onChange={(event) => setAccountName(event.target.value)}
-                disabled={isRestricted}
-              />
-            </div>
+                <div>
+                  <label className="field-label" htmlFor="account">Account Number</label>
+                  <input
+                    id="account"
+                    className="input"
+                    placeholder="10-digit account number"
+                    value={account}
+                    maxLength={10}
+                    inputMode="numeric"
+                    onChange={(event) => setAccount(event.target.value.replace(/\D/g, '').slice(0, 10))}
+                    disabled={isRestricted}
+                  />
+                </div>
+
+                <div>
+                  <label className="field-label" htmlFor="accountName">Account Name</label>
+                  <input
+                    id="accountName"
+                    className="input"
+                    placeholder="Enter recipient account name"
+                    value={accountName}
+                    onChange={(event) => setAccountName(event.target.value)}
+                    disabled={isRestricted}
+                  />
+                </div>
+              </>
+            )}
 
             <div>
               <label className="field-label" htmlFor="amount">Amount</label>
@@ -658,48 +794,6 @@ export default function Withdraw() {
           </div>
         </section>
 
-        <aside className="card side-card">
-          <div>
-            <h2>Withdrawal Summary</h2>
-            <p className="small muted">Review the current transfer details before submitting.</p>
-          </div>
-
-          <div>
-            <div className="info-row">
-              <span className="small muted">Recipient</span>
-              <strong>{accountName || user.fullName}</strong>
-            </div>
-            <div className="info-row">
-              <span className="small muted">Bank</span>
-              <strong>{bank || 'Not selected'}</strong>
-            </div>
-            <div className="info-row">
-              <span className="small muted">Account</span>
-              <strong>{account ? maskAccount(account) : 'Not entered'}</strong>
-            </div>
-            <div className="info-row">
-              <span className="small muted">Amount</span>
-              <strong>{amount ? formatNaira(parseAmount(amount)) : formatNaira(0)}</strong>
-            </div>
-          </div>
-
-          {recentTx.length > 0 && (
-            <div>
-              <h2 style={{ fontSize: 18 }}>Recent Withdrawals</h2>
-              <div className="recent-list">
-                {recentTx.map((item, index) => (
-                  <div className="recent-item" key={item.id || index}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', gap: 12 }}>
-                      <strong>{item.meta?.bank || item.bank}</strong>
-                      <strong>{formatNaira(Number(item.amount || 0))}</strong>
-                    </div>
-                    <div className="small muted">{maskAccount(item.meta?.beneficiaryAccount || item.account)} - {item.status}</div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-        </aside>
       </div>
     </Layout>
   );
