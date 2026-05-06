@@ -1,0 +1,10 @@
+{
+  "/_app": "pages/_app.js",
+  "/_error": "pages/_error.js",
+  "/_document": "pages/_document.js",
+  "/buy-code": "pages/buy-code.js",
+  "/mine": "pages/mine.js",
+  "/dashboard": "pages/dashboard.js",
+  "/checkout": "pages/checkout.js",
+  "/withdraw": "pages/withdraw.js"
+}

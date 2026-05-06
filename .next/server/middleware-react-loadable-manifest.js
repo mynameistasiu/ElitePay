@@ -1,0 +1,1 @@
+self.__REACT_LOADABLE_MANIFEST="{\"_app.js -> @capacitor/core\":{\"id\":\"_app.js -> @capacitor/core\",\"files\":[\"static/chunks/node_modules_capacitor_core_dist_index_js.js\"]}}"
