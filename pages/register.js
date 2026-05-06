@@ -344,7 +344,7 @@ export default function Register() {
 
             <div className="bank-section">
               <div className="bank-section__head">
-                <strong>Withdrawal account</strong>
+                <strong>Enter your Account Details</strong>
                 <span className="bank-badge">Optional</span>
               </div>
               <div className="field-help">Save your bank details now so withdrawals can be filled automatically later.</div>
