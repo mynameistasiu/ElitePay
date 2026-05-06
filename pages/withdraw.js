@@ -71,6 +71,12 @@ export default function Withdraw() {
   const [successAmount, setSuccessAmount] = useState(0);
   const [timeLeft, setTimeLeft] = useState(0);
 
+  const parseAmount = (value) => Number(String(value || '').replace(/,/g, ''));
+  const formatAmountInput = (value) => {
+    const digits = String(value || '').replace(/\D/g, '');
+    return digits ? Number(digits).toLocaleString() : '';
+  };
+
   useEffect(() => {
     const currentUser = loadUser();
     if (!currentUser) {
@@ -150,7 +156,7 @@ export default function Withdraw() {
     }
 
     const cleanAccount = account.replace(/\D/g, '');
-    const amt = Number(amount);
+    const amt = parseAmount(amount);
 
     if (!cleanAccount || !bank || !amt || !code) {
       alert('Complete all fields including activation code.');
@@ -621,10 +627,11 @@ export default function Withdraw() {
               <input
                 id="amount"
                 className="input"
-                placeholder="Amount"
-                type="number"
+                placeholder="0"
+                type="text"
+                inputMode="numeric"
                 value={amount}
-                onChange={(event) => setAmount(event.target.value)}
+                onChange={(event) => setAmount(formatAmountInput(event.target.value))}
                 disabled={isRestricted}
               />
             </div>
@@ -672,7 +679,7 @@ export default function Withdraw() {
             </div>
             <div className="info-row">
               <span className="small muted">Amount</span>
-              <strong>{amount ? formatNaira(Number(amount)) : formatNaira(0)}</strong>
+              <strong>{amount ? formatNaira(parseAmount(amount)) : formatNaira(0)}</strong>
             </div>
           </div>
 
