@@ -7,7 +7,7 @@ import { loadUser } from "../utils/storage";
 
 const CODE_PRICE = 5500;
 const WA = "+2348133861975";
-const ONLINE_PAYMENT_URL = "https://www.flutterwave.com/pay/gcy5nrz2por5";
+const ONLINE_PAYMENT_URL = "https://checkout.korapay.com/pay/elitepay";
 
 function PurchaseLogo({ size = 34 }) {
   return (
