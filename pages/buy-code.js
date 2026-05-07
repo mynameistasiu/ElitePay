@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import Layout from "../components/Layout";
 import { loadUser } from "../utils/storage";
 
-const CODE_PRICE = 5500;
+const CODE_PRICE = 5700;
 const WA = "+2348133861975";
 const ONLINE_PAYMENT_URL = "https://checkout.korapay.com/pay/elitepayng";
 
