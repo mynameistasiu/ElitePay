@@ -111,6 +111,14 @@ export default function CodeSuccess() {
     router.push(path);
   };
 
+  useEffect(() => {
+    if (!router.isReady) return;
+
+    if (router.query.payment === 'online' || router.query.reference) {
+      recordSuccessfulPayment();
+    }
+  }, [router.isReady, router.query.payment, router.query.reference]);
+
   return (
     <Layout title="Payment Successful - ElitePay">
       <section className="codeSuccess">

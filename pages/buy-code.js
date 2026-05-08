@@ -3,11 +3,12 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
 import { motion, AnimatePresence } from "framer-motion";
 import Layout from "../components/Layout";
-import { loadUser } from "../utils/storage";
+import { loadUser, saveTx } from "../utils/storage";
 
 const CODE_PRICE = 5700;
 const WA = "+2348133861975";
 const ONLINE_PAYMENT_URL = "https://checkout.korapay.com/pay/elitepayng";
+const ONLINE_RETURN_PATH = "/code?payment=online";
 
 function PurchaseLogo({ size = 34 }) {
   return (
@@ -136,7 +137,26 @@ export default function BuyCode() {
 
   const openWhatsApp = () => window.open(`https://wa.me/${WA.replace("+", "")}`, "_blank", "noopener");
   const openOnlinePayment = () => {
-    window.location.href = ONLINE_PAYMENT_URL;
+    const redirectUrl = new URL(ONLINE_RETURN_PATH, window.location.origin).toString();
+    const paymentUrl = new URL(ONLINE_PAYMENT_URL);
+    paymentUrl.searchParams.set("redirect_url", redirectUrl);
+
+    try {
+      saveTx({
+        type: "buy_code",
+        amount: CODE_PRICE,
+        status: "pending",
+        meta: {
+          gateway: "korapay",
+          redirect_url: redirectUrl,
+        },
+        created_at: new Date().toISOString(),
+      });
+    } catch (error) {
+      // Continue to payment even if local transaction history cannot be updated.
+    }
+
+    window.location.assign(paymentUrl.toString());
   };
 
   return (
