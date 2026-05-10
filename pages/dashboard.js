@@ -18,8 +18,6 @@ export default function Dashboard() {
   const [restricted, setRestricted] = useState(false);
   const [timeLeft, setTimeLeft] = useState(0);
 
-  const WHATSAPP_LINK = 'https://wa.me/2347085462173?text=Hello%2C%20I%20want%20to%20activate%20my%20ElitePay%20Wallet%20account';
-
   useEffect(() => {
     const currentUser = loadUser();
     if (!currentUser) {
@@ -537,7 +535,7 @@ export default function Dashboard() {
               <li><span>3</span>Making double withdrawal requests at the same time.</li>
               <li><span>4</span>Using one activation code to withdraw from a different account.</li>
             </ol>
-            <button className="btn" style={{ width: '100%' }} onClick={() => { window.location.href = WHATSAPP_LINK; }}>
+            <button className="btn" style={{ width: '100%' }} onClick={() => router.push('/activation')}>
               Activate Account
             </button>
           </div>
