@@ -172,6 +172,45 @@ export default function BuyCode() {
         </div>
 
         <div className="payment-grid">
+                    <motion.div
+            className="card"
+            onMouseEnter={() => setSelected("merchant")}
+            onFocus={() => setSelected("merchant")}
+            whileHover={{ y: -4 }}
+            transition={{ type: "spring", stiffness: 260, damping: 24 }}
+          >
+            <div className="card-header">
+              <div className="card-icon">
+                <PurchaseLogo size={28} />
+              </div>
+              <div>
+                <h2 className="card-title">Pay Vendor</h2>
+                <div className="card-subtitle">Manual vendor payment via bank transfer</div>
+              </div>
+            </div>
+
+            <div className="card-body">
+              <p className="card-note">Click <strong>Buy Now</strong> to proceed with payment confirmation. You'll be guided to complete the bank transfer and receive your activation code instantly.</p>
+
+              <div className="price-display">
+                <span className="price-label">Amount to Pay</span>
+                <span className="price-value">₦{CODE_PRICE.toLocaleString()}</span>
+              </div>
+
+              <div className="card-actions">
+                <button
+                  className="btn btn-primary"
+                  onClick={handleBuyClick}
+                >
+                  Buy Now
+                </button>
+                <button className="btn btn-secondary" onClick={openWhatsApp}>
+                  Contact Support
+                </button>
+              </div>
+            </div>
+          </motion.div>
+          
           <motion.div
             className="card"
             onMouseEnter={() => setSelected("online")}
@@ -211,45 +250,6 @@ export default function BuyCode() {
                   onClick={openOnlinePayment}
                 >
                   Pay Online
-                </button>
-                <button className="btn btn-secondary" onClick={openWhatsApp}>
-                  Contact Support
-                </button>
-              </div>
-            </div>
-          </motion.div>
-
-          <motion.div
-            className="card"
-            onMouseEnter={() => setSelected("merchant")}
-            onFocus={() => setSelected("merchant")}
-            whileHover={{ y: -4 }}
-            transition={{ type: "spring", stiffness: 260, damping: 24 }}
-          >
-            <div className="card-header">
-              <div className="card-icon">
-                <PurchaseLogo size={28} />
-              </div>
-              <div>
-                <h2 className="card-title">Pay Vendor</h2>
-                <div className="card-subtitle">Manual vendor payment via bank transfer</div>
-              </div>
-            </div>
-
-            <div className="card-body">
-              <p className="card-note">Click <strong>Buy Now</strong> to proceed with payment confirmation. You'll be guided to complete the bank transfer and receive your activation code instantly.</p>
-
-              <div className="price-display">
-                <span className="price-label">Amount to Pay</span>
-                <span className="price-value">₦{CODE_PRICE.toLocaleString()}</span>
-              </div>
-
-              <div className="card-actions">
-                <button
-                  className="btn btn-primary"
-                  onClick={handleBuyClick}
-                >
-                  Buy Now
                 </button>
                 <button className="btn btn-secondary" onClick={openWhatsApp}>
                   Contact Support
