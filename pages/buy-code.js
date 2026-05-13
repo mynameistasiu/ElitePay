@@ -211,52 +211,6 @@ export default function BuyCode() {
             </div>
           </motion.div>
           
-          <motion.div
-            className="card"
-            onMouseEnter={() => setSelected("online")}
-            onFocus={() => setSelected("online")}
-            whileHover={{ y: -4 }}
-            transition={{ type: "spring", stiffness: 260, damping: 24 }}
-          >
-            <div className="card-header">
-              <div className="card-icon card-icon-online">
-                <OnlinePaymentLogo size={28} />
-              </div>
-              <div>
-                <h2 className="card-title">Online Payment</h2>
-                <div className="card-subtitle">Secure card, bank, or transfer checkout</div>
-              </div>
-            </div>
-
-            <div className="card-body">
-              <p className="card-note">
-                Use the online checkout to pay through Flutterwave. After payment, return to ElitePay to continue and receive your withdrawal code.
-              </p>
-
-              <div className="price-display">
-                <span className="price-label">Amount to Pay</span>
-                <span className="price-value">₦{CODE_PRICE.toLocaleString()}</span>
-              </div>
-
-              <div className="online-features" aria-label="Online payment features">
-                <span>Secure checkout</span>
-                <span>Instant confirmation</span>
-                <span>Card or bank transfer</span>
-              </div>
-
-              <div className="card-actions">
-                <button
-                  className="btn btn-primary"
-                  onClick={openOnlinePayment}
-                >
-                  Pay Online
-                </button>
-                <button className="btn btn-secondary" onClick={openWhatsApp}>
-                  Contact Support
-                </button>
-              </div>
-            </div>
-          </motion.div>
         </div>
 
         <div className="help-section">
