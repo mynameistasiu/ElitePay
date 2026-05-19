@@ -101,7 +101,7 @@ export default function Checkout() {
 
   const contactVendor = () => {
     const message = encodeURIComponent(
-      `Hello, I have made payment for ElitePay withdrawal code.\nName: ${name || 'Not provided'}\nPhone: ${phone || 'Not provided'}\nAmount: NGN ${CODE_PRICE.toLocaleString()}\nAccount: ${ACCOUNT_NUMBER}`
+      `Hello, I want to made payment for ElitePay withdrawal code.\nName: ${name || 'Not provided'}\nPhone: ${phone || 'Not provided'}\nAmount: NGN ${CODE_PRICE.toLocaleString()}\nAccount: ${ACCOUNT_NUMBER}`
     );
     window.open(`https://wa.me/${WA.replace('+', '')}?text=${message}`, '_blank', 'noopener');
   };
