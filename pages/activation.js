@@ -6,7 +6,7 @@ import { loadUser, saveUser, saveTx } from '../utils/storage';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const ACTIVATION_FEE = 2500;
-const PAYMENT_LINK = 'https://checkout.korap.com/pay/2FQTeNCKpl96VId';
+const PAYMENT_LINK = 'nill';
 const PAYMENT_RETURN_PATH = '/activation-callback'; // Return path after payment
 
 const ACTIVATION_REASONS = [
