@@ -24,6 +24,20 @@ function CopyIcon({ size = 16 }) {
   );
 }
 
+function KudaMark() {
+  return (
+    <div className="kuda-mark" aria-hidden="true">
+      <svg width="32" height="32" viewBox="0 0 100 100" fill="none">
+        <rect width="100" height="100" rx="18" fill="#4B257D" />
+        <path d="M22 20V80" stroke="white" strokeWidth="8" strokeLinecap="round" />
+        <path d="M35 20L25 50L35 80" stroke="white" strokeWidth="10" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M50 20L35 50L50 80" stroke="white" strokeWidth="12" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M78 20L50 50L78 80" stroke="white" strokeWidth="14" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    </div>
+  );
+}
+
 export default function Checkout() {
   const router = useRouter();
   const { name: qName, phone: qPhone } = router.query;
@@ -102,7 +116,6 @@ export default function Checkout() {
 
       setConfirming(false);
       setPaymentStatus('awaiting');
-
       window.location.href = buildWhatsAppUrl();
     }, 900);
   };
@@ -210,13 +223,19 @@ export default function Checkout() {
           margin-bottom: 12px;
         }
 
-        .kuda-logo {
+        .kuda-mark {
           width: 42px;
           height: 42px;
           border-radius: 10px;
-          object-fit: cover;
+          overflow: hidden;
+          flex-shrink: 0;
           box-shadow: 0 8px 18px rgba(0, 0, 0, 0.12);
-          flex: 0 0 auto;
+        }
+
+        .kuda-mark svg {
+          width: 100%;
+          height: 100%;
+          display: block;
         }
 
         .bank-name {
@@ -414,7 +433,7 @@ export default function Checkout() {
           <div className="account-card">
             <div className="account-main">
               <div className="bank-row">
-                <img src="/kuda-logo.png" alt="Kuda Bank" className="kuda-logo" />
+                <KudaMark />
                 <div style={{ textAlign: 'left' }}>
                   <span className="bank-label">Bank name</span>
                   <div className="bank-name">{BANK_NAME}</div>
@@ -462,10 +481,7 @@ export default function Checkout() {
               Cancel
             </button>
             <span className="divider" />
-            <button
-              className="text-action help"
-              onClick={() => window.open(`https://wa.me/${WA.replace('+', '')}`, '_blank', 'noopener')}
-            >
+            <button className="text-action help" onClick={() => window.open(`https://wa.me/${WA.replace('+', '')}`, '_blank', 'noopener')}>
               Help?
             </button>
           </div>
