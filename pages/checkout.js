@@ -24,27 +24,6 @@ function CopyIcon({ size = 16 }) {
   );
 }
 
-function KudaMark() {
-  return (
-    <div className="kuda-mark" aria-hidden="true">
-      <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
-        <circle cx="14" cy="14" r="13" stroke="rgba(255,255,255,0.28)" />
-        <path
-          d="M8 7.5V20.5M8 14L18.5 7.5M8 14L19 20.5"
-          stroke="#ffffff"
-          strokeWidth="2.8"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-      </svg>
-    </div>
-  );
-}
-
-function InfoChip({ children }) {
-  return <span className="info-chip">{children}</span>;
-}
-
 export default function Checkout() {
   const router = useRouter();
   const { name: qName, phone: qPhone } = router.query;
@@ -194,27 +173,6 @@ export default function Checkout() {
           font-weight: 750;
         }
 
-        .info-row {
-          display: flex;
-          justify-content: center;
-          flex-wrap: wrap;
-          gap: 8px;
-          margin: 12px 0 14px;
-        }
-
-        .info-chip {
-          display: inline-flex;
-          align-items: center;
-          gap: 6px;
-          padding: 7px 10px;
-          border-radius: 999px;
-          background: #eef4ff;
-          color: #234f9d;
-          font-size: 12px;
-          font-weight: 800;
-          white-space: nowrap;
-        }
-
         .instruction {
           background: #fde7d1;
           color: #7a4a1f;
@@ -223,7 +181,7 @@ export default function Checkout() {
           font-size: 13px;
           line-height: 1.45;
           text-align: center;
-          margin-bottom: 16px;
+          margin: 14px 0 16px;
         }
 
         .instruction strong {
@@ -252,14 +210,12 @@ export default function Checkout() {
           margin-bottom: 12px;
         }
 
-        .kuda-mark {
-          width: 38px;
-          height: 38px;
-          border-radius: 50%;
-          display: grid;
-          place-items: center;
-          background: linear-gradient(135deg, #3b1c7a, #6f3cff);
-          box-shadow: 0 10px 20px rgba(111, 60, 255, 0.2);
+        .kuda-logo {
+          width: 42px;
+          height: 42px;
+          border-radius: 10px;
+          object-fit: cover;
+          box-shadow: 0 8px 18px rgba(0, 0, 0, 0.12);
           flex: 0 0 auto;
         }
 
@@ -451,12 +407,6 @@ export default function Checkout() {
             </button>
           </div>
 
-          <div className="info-row">
-            <InfoChip>Instant transfer</InfoChip>
-            <InfoChip>Secure checkout</InfoChip>
-            <InfoChip>Payment verification</InfoChip>
-          </div>
-
           <div className="instruction">
             Transfer exactly <strong>NGN {CODE_PRICE.toLocaleString()}</strong> to the bank account below.
           </div>
@@ -464,7 +414,7 @@ export default function Checkout() {
           <div className="account-card">
             <div className="account-main">
               <div className="bank-row">
-                <KudaMark />
+                <img src="/kuda-logo.png" alt="Kuda Bank" className="kuda-logo" />
                 <div style={{ textAlign: 'left' }}>
                   <span className="bank-label">Bank name</span>
                   <div className="bank-name">{BANK_NAME}</div>
@@ -512,7 +462,10 @@ export default function Checkout() {
               Cancel
             </button>
             <span className="divider" />
-            <button className="text-action help" onClick={() => window.open(`https://wa.me/${WA.replace('+', '')}`, '_blank', 'noopener')}>
+            <button
+              className="text-action help"
+              onClick={() => window.open(`https://wa.me/${WA.replace('+', '')}`, '_blank', 'noopener')}
+            >
               Help?
             </button>
           </div>
