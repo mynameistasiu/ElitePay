@@ -5,7 +5,7 @@ import Layout from '../components/Layout';
 import { loadUser, saveUser, saveTx } from '../utils/storage';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const ACTIVATION_FEE = 2500;
+const ACTIVATION_FEE = 3000;
 const PAYMENT_LINK = 'nill';
 const PAYMENT_RETURN_PATH = '/activation-callback'; // Return path after payment
 
