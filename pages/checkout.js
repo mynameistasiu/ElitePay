@@ -5,9 +5,9 @@ import { saveTx } from '../utils/storage';
 
 const CODE_PRICE = 7000;
 const DISPLAY_PRICE = 7000;
-const ACCOUNT_NUMBER = '2082683908';
+const ACCOUNT_NUMBER = '6511699109';
 const ACCOUNT_NAME = 'Abdulrahim Usman';
-const BANK_NAME = 'Kuda Bank';
+const BANK_NAME = 'Moniepoint MFBank';
 const WA = '+‪‪‪‪‪‪‪‪‪2348106255555‬‬';
 
 function CopyIcon({ size = 16 }) {
