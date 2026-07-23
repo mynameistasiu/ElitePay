@@ -24,15 +24,12 @@ function CopyIcon({ size = 16 }) {
   );
 }
 
-function KudaMark() {
+function MoniepointMark() {
   return (
-    <div className="kuda-mark" aria-hidden="true">
-      <svg width="32" height="32" viewBox="0 0 100 100" fill="none">
-        <rect width="100" height="100" rx="18" fill="#4B257D" />
-        <path d="M22 20V80" stroke="white" strokeWidth="8" strokeLinecap="round" />
-        <path d="M35 20L25 50L35 80" stroke="white" strokeWidth="10" strokeLinecap="round" strokeLinejoin="round" />
-        <path d="M50 20L35 50L50 80" stroke="white" strokeWidth="12" strokeLinecap="round" strokeLinejoin="round" />
-        <path d="M78 20L50 50L78 80" stroke="white" strokeWidth="14" strokeLinecap="round" strokeLinejoin="round" />
+    <div className="moniepoint-mark" aria-hidden="true">
+      <svg width="32" height="32" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="50" cy="50" r="50" fill="#0866C6" />
+        <text x="50" y="60" textAnchor="middle" fontFamily="Arial, sans-serif" fontSize="65" fontWeight="bold" fill="white" dominantBaseline="middle">M</text>
       </svg>
     </div>
   );
@@ -223,7 +220,7 @@ export default function Checkout() {
           margin-bottom: 12px;
         }
 
-        .kuda-mark {
+        .moniepoint-mark {
           width: 42px;
           height: 42px;
           border-radius: 10px;
@@ -232,7 +229,7 @@ export default function Checkout() {
           box-shadow: 0 8px 18px rgba(0, 0, 0, 0.12);
         }
 
-        .kuda-mark svg {
+        .moniepoint-mark svg {
           width: 100%;
           height: 100%;
           display: block;
@@ -433,7 +430,7 @@ export default function Checkout() {
           <div className="account-card">
             <div className="account-main">
               <div className="bank-row">
-                <KudaMark />
+                <MoniepointMark />
                 <div style={{ textAlign: 'left' }}>
                   <span className="bank-label">Bank name</span>
                   <div className="bank-name">{BANK_NAME}</div>
