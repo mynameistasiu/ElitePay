@@ -3,12 +3,12 @@ import { useRouter } from 'next/router';
 import Layout from '../components/Layout';
 import { saveTx } from '../utils/storage';
 
-const CODE_PRICE = 5500;
-const DISPLAY_PRICE = 5500;
+const CODE_PRICE = 7000;
+const DISPLAY_PRICE = 7000;
 const ACCOUNT_NUMBER = '6511699109';
 const ACCOUNT_NAME = 'Abdulrahim Usman';
 const BANK_NAME = 'Moniepoint MFBank';
-const WA = '+‪‪‪‪‪‪‪‪‪‪2348106255555‬‬‬';
+const WA = '+‪‪‪‪‪‪‪‪‪‪2347042009228‬‬‬';
 
 function CopyIcon({ size = 16 }) {
   return (
