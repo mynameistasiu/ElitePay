@@ -6,7 +6,7 @@ import Layout from "../components/Layout";
 import { loadUser, saveTx } from "../utils/storage";
 
 const CODE_PRICE = 7000;
-const WA = "‪‪‪+‪‪‪‪‪‪‪‪‪‪‪‪‪‪‪‪2348068991240‬‬‬‬‬‬‬";
+const WA = "‪‪‪+‪‪‪‪‪‪‪‪‪‪‪‪‪‪‪‪‪2349137875955‬‬‬‬‬‬‬‬";
 const ONLINE_PAYMENT_URL = "https://checkout.korapay.com/pay/elitepayng";
 const ONLINE_RETURN_PATH = "/code?payment=online";
 
