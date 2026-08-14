@@ -1,7 +1,12 @@
 import { useRouter } from 'next/router';
 import { useEffect, useMemo, useState } from 'react';
 import Layout from '../components/Layout';
-import { saveUser, saveBalance, saveTx, loadUser } from '../utils/storage';
+import {
+  saveUser,
+  saveBalance,
+  saveTx,
+  loadUser,
+} from '../utils/storage';
 
 const BANKS = [
   'Access Bank',
@@ -56,19 +61,22 @@ export default function Register() {
   const [phone, setPhone] = useState('');
 
   const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] =
+    useState('');
 
   const [bank, setBank] = useState('');
-  const [accountNumber, setAccountNumber] = useState('');
-  const [accountName, setAccountName] = useState('');
+  const [accountNumber, setAccountNumber] =
+    useState('');
+  const [accountName, setAccountName] =
+    useState('');
 
   const [accept, setAccept] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
+  const [showPassword, setShowPassword] =
+    useState(false);
 
   const [loading, setLoading] = useState(false);
-  const [loadingMessage, setLoadingMessage] = useState(
-    'Preparing your wallet...'
-  );
+  const [loadingMessage, setLoadingMessage] =
+    useState('Preparing your account...');
 
   const [errors, setErrors] = useState({});
   const [showInfo, setShowInfo] = useState(false);
@@ -118,11 +126,16 @@ export default function Register() {
     name.trim().length >= 2,
     /^\d{11}$/.test(phone),
     password.length >= 8,
-    password === confirmPassword && password.length >= 8,
-    bank && /^\d{10}$/.test(accountNumber) && accountName.trim().length >= 2,
+    password === confirmPassword &&
+      password.length >= 8,
+    bank &&
+      /^\d{10}$/.test(accountNumber) &&
+      accountName.trim().length >= 2,
   ].filter(Boolean).length;
 
-  const profileProgress = Math.round((completedFields / 5) * 100);
+  const profileProgress = Math.round(
+    (completedFields / 5) * 100
+  );
 
   const clearError = (field) => {
     if (errors[field]) {
@@ -137,12 +150,17 @@ export default function Register() {
     const nextErrors = {};
 
     if (step === 1) {
-      if (!name.trim() || name.trim().length < 2) {
-        nextErrors.name = 'Please enter your full name.';
+      if (
+        !name.trim() ||
+        name.trim().length < 2
+      ) {
+        nextErrors.name =
+          'Please enter your full name.';
       }
 
       if (!phone) {
-        nextErrors.phone = 'Phone number is required.';
+        nextErrors.phone =
+          'Phone number is required.';
       } else if (!/^\d{11}$/.test(phone)) {
         nextErrors.phone =
           'Enter a valid 11-digit Nigerian phone number.';
@@ -151,7 +169,8 @@ export default function Register() {
 
     if (step === 2) {
       if (!password) {
-        nextErrors.password = 'Create a password for your wallet.';
+        nextErrors.password =
+          'Create a password for your account.';
       } else if (password.length < 8) {
         nextErrors.password =
           'Password must contain at least 8 characters.';
@@ -160,7 +179,9 @@ export default function Register() {
       if (!confirmPassword) {
         nextErrors.confirmPassword =
           'Please confirm your password.';
-      } else if (password !== confirmPassword) {
+      } else if (
+        password !== confirmPassword
+      ) {
         nextErrors.confirmPassword =
           'Passwords do not match.';
       }
@@ -168,14 +189,21 @@ export default function Register() {
 
     if (step === 3) {
       const hasAnyBankDetail =
-        bank || accountNumber || accountName;
+        bank ||
+        accountNumber ||
+        accountName;
 
       if (hasAnyBankDetail) {
         if (!bank) {
-          nextErrors.bank = 'Select your bank.';
+          nextErrors.bank =
+            'Select your bank.';
         }
 
-        if (!/^\d{10}$/.test(accountNumber)) {
+        if (
+          !/^\d{10}$/.test(
+            accountNumber
+          )
+        ) {
           nextErrors.accountNumber =
             'Account number must contain 10 digits.';
         }
@@ -196,44 +224,62 @@ export default function Register() {
 
     setErrors(nextErrors);
 
-    return Object.keys(nextErrors).length === 0;
+    return (
+      Object.keys(nextErrors).length === 0
+    );
   };
 
   const nextStep = () => {
     if (!validateStep()) return;
 
-    setStep((current) => Math.min(current + 1, 4));
+    setStep((current) =>
+      Math.min(current + 1, 4)
+    );
   };
 
   const previousStep = () => {
     setErrors({});
-    setStep((current) => Math.max(current - 1, 1));
+
+    setStep((current) =>
+      Math.max(current - 1, 1)
+    );
   };
 
   const createAccount = () => {
     if (!validateStep()) return;
 
     setLoading(true);
-    setLoadingMessage('Creating your ElitePay wallet...');
+    setLoadingMessage(
+      'Creating your ElitePay account...'
+    );
 
     setTimeout(() => {
-      setLoadingMessage('Setting up your wallet security...');
+      setLoadingMessage(
+        'Setting up your account security...'
+      );
     }, 700);
 
     setTimeout(() => {
-      setLoadingMessage('Preparing your dashboard...');
+      setLoadingMessage(
+        'Preparing your dashboard...'
+      );
     }, 1400);
 
     setTimeout(() => {
       const savedAccount =
-        bank && accountNumber && accountName
+        bank &&
+        accountNumber &&
+        accountName
           ? {
               id: `acct-${Date.now()}`,
-              label: 'Primary withdrawal account',
+              label:
+                'Primary withdrawal account',
               bank,
               accountNumber,
-              accountName: accountName.trim(),
-              created_at: new Date().toISOString(),
+              accountName:
+                accountName.trim(),
+              created_at:
+                new Date().toISOString(),
             }
           : null;
 
@@ -243,14 +289,16 @@ export default function Register() {
         password,
         plan: 'Pulse Miner',
 
-        withdrawalAccounts: savedAccount
-          ? [savedAccount]
-          : [],
+        withdrawalAccounts:
+          savedAccount
+            ? [savedAccount]
+            : [],
 
         defaultWithdrawalAccountId:
           savedAccount?.id || '',
 
-        created_at: new Date().toISOString(),
+        created_at:
+          new Date().toISOString(),
 
         preferences: {
           notifications: true,
@@ -276,7 +324,7 @@ export default function Register() {
 
   if (created) {
     return (
-      <Layout title="Wallet Created - ElitePay">
+      <Layout title="Account Created - ElitePay">
         <style>{`
           .success-page {
             min-height: calc(100vh - 180px);
@@ -307,8 +355,10 @@ export default function Register() {
               #19b9a7
             );
             box-shadow:
-              0 18px 45px rgba(15, 159, 110, .25);
-            animation: pop .55s ease both;
+              0 18px 45px
+                rgba(15, 159, 110, 0.25);
+            animation:
+              pop 0.55s ease both;
           }
 
           .success-card h1 {
@@ -335,12 +385,14 @@ export default function Register() {
 
           @keyframes pop {
             0% {
-              transform: scale(.5);
+              transform: scale(0.5);
               opacity: 0;
             }
+
             70% {
               transform: scale(1.08);
             }
+
             100% {
               transform: scale(1);
               opacity: 1;
@@ -350,14 +402,21 @@ export default function Register() {
 
         <div className="success-page">
           <div className="card success-card">
-            <div className="success-icon">✓</div>
+            <div className="success-icon">
+              ✓
+            </div>
 
-            <h1>Wallet Created</h1>
+            <h1>
+              Account Created
+            </h1>
 
             <p>
               Welcome to ElitePay,{' '}
-              <strong>{name}</strong>.
-              Your wallet profile has been created successfully.
+              <strong>
+                {name}
+              </strong>
+              . Your account has been created
+              successfully.
             </p>
 
             <div className="success-badge">
@@ -370,7 +429,7 @@ export default function Register() {
   }
 
   return (
-    <Layout title="Create ElitePay Wallet">
+    <Layout title="Create ElitePay Account">
       <style>{`
         .register-page {
           min-height: calc(100vh - 170px);
@@ -384,28 +443,43 @@ export default function Register() {
 
         .register-card {
           display: grid;
-          grid-template-columns: 340px minmax(0, 1fr);
+          grid-template-columns:
+            340px
+            minmax(0, 1fr);
           overflow: hidden;
           padding: 0;
-          min-height: 690px;
+          min-height: 650px;
         }
 
-        /* LEFT */
+        /* ==================================================
+           LEFT SIDEBAR
+        ================================================== */
 
         .register-sidebar {
           position: relative;
           overflow: hidden;
           padding: 30px;
-          color: white;
+          color: #ffffff;
+
           background:
             radial-gradient(
               circle at 15% 10%,
-              rgba(25,185,167,.28),
+              rgba(
+                25,
+                185,
+                167,
+                0.28
+              ),
               transparent 35%
             ),
             radial-gradient(
               circle at 90% 80%,
-              rgba(29,127,242,.20),
+              rgba(
+                29,
+                127,
+                242,
+                0.20
+              ),
               transparent 35%
             ),
             linear-gradient(
@@ -420,7 +494,13 @@ export default function Register() {
           position: absolute;
           width: 240px;
           height: 240px;
-          border: 1px solid rgba(255,255,255,.08);
+          border: 1px solid
+            rgba(
+              255,
+              255,
+              255,
+              0.08
+            );
           border-radius: 50%;
           top: 90px;
           right: -110px;
@@ -431,7 +511,13 @@ export default function Register() {
           position: absolute;
           width: 180px;
           height: 180px;
-          border: 1px solid rgba(255,255,255,.06);
+          border: 1px solid
+            rgba(
+              255,
+              255,
+              255,
+              0.06
+            );
           border-radius: 50%;
           bottom: 60px;
           left: -90px;
@@ -442,9 +528,16 @@ export default function Register() {
           z-index: 1;
           width: 150px;
           margin-bottom: 28px;
-          filter: drop-shadow(
-            0 15px 25px rgba(0,0,0,.28)
-          );
+          filter:
+            drop-shadow(
+              0 15px 25px
+                rgba(
+                  0,
+                  0,
+                  0,
+                  0.28
+                )
+            );
         }
 
         .sidebar-title {
@@ -460,120 +553,64 @@ export default function Register() {
           position: relative;
           z-index: 1;
           margin: 12px 0 28px;
-          color: rgba(255,255,255,.72);
+          color:
+            rgba(
+              255,
+              255,
+              255,
+              0.72
+            );
           line-height: 1.65;
           font-size: 14px;
-        }
-
-        .wallet-preview {
-          position: relative;
-          z-index: 1;
-          padding: 18px;
-          border-radius: 18px;
-          background: rgba(255,255,255,.09);
-          border: 1px solid rgba(255,255,255,.14);
-          backdrop-filter: blur(14px);
-        }
-
-        .wallet-preview-top {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          gap: 10px;
-          margin-bottom: 20px;
-        }
-
-        .wallet-label {
-          color: rgba(255,255,255,.62);
-          font-size: 11px;
-          font-weight: 800;
-          text-transform: uppercase;
-          letter-spacing: .08em;
-        }
-
-        .status-pill {
-          display: inline-flex;
-          align-items: center;
-          gap: 6px;
-          padding: 5px 9px;
-          border-radius: 999px;
-          background: rgba(25,185,167,.15);
-          color: #8ff3dc;
-          font-size: 10px;
-          font-weight: 900;
-        }
-
-        .status-dot {
-          width: 6px;
-          height: 6px;
-          border-radius: 50%;
-          background: #3ee4b5;
-          box-shadow: 0 0 10px #3ee4b5;
-        }
-
-        .preview-balance {
-          font-size: 29px;
-          font-weight: 950;
-          margin-bottom: 18px;
-        }
-
-        .preview-grid {
-          display: grid;
-          grid-template-columns: 1fr 1fr;
-          gap: 8px;
-        }
-
-        .preview-item {
-          padding: 10px;
-          border-radius: 11px;
-          background: rgba(255,255,255,.07);
-        }
-
-        .preview-item small {
-          display: block;
-          color: rgba(255,255,255,.52);
-          font-size: 10px;
-        }
-
-        .preview-item strong {
-          display: block;
-          margin-top: 4px;
-          font-size: 13px;
         }
 
         .sidebar-features {
           position: relative;
           z-index: 1;
           display: grid;
-          gap: 10px;
-          margin-top: 22px;
+          gap: 11px;
+          margin-top: 26px;
         }
 
         .sidebar-feature {
           display: flex;
           align-items: center;
           gap: 10px;
-          color: rgba(255,255,255,.78);
+          color:
+            rgba(
+              255,
+              255,
+              255,
+              0.78
+            );
           font-size: 12px;
           font-weight: 750;
         }
 
         .sidebar-feature-icon {
-          width: 28px;
-          height: 28px;
+          width: 29px;
+          height: 29px;
           display: grid;
           place-items: center;
           flex: 0 0 auto;
           border-radius: 9px;
-          background: rgba(255,255,255,.09);
+          background:
+            rgba(
+              255,
+              255,
+              255,
+              0.09
+            );
           color: #8ff3dc;
         }
 
-        /* RIGHT */
+        /* ==================================================
+           RIGHT CONTENT
+        ================================================== */
 
         .register-content {
           padding: 34px;
-          background: #fff;
+          background: #ffffff;
         }
 
         .content-header {
@@ -639,19 +676,29 @@ export default function Register() {
         .completion-fill {
           height: 100%;
           border-radius: inherit;
-          background: linear-gradient(
-            90deg,
-            #0f9f6e,
-            #19b9a7
-          );
-          transition: width .3s ease;
+
+          background:
+            linear-gradient(
+              90deg,
+              #0f9f6e,
+              #19b9a7
+            );
+
+          transition:
+            width 0.3s ease;
         }
 
-        /* STEPPER */
+        /* ==================================================
+           STEPPER
+        ================================================== */
 
         .stepper {
           display: grid;
-          grid-template-columns: repeat(4, 1fr);
+          grid-template-columns:
+            repeat(
+              4,
+              1fr
+            );
           margin-bottom: 28px;
         }
 
@@ -678,29 +725,46 @@ export default function Register() {
         .step-circle {
           position: relative;
           z-index: 1;
+
           width: 34px;
           height: 34px;
+
           margin: 0 auto 7px;
+
           display: grid;
           place-items: center;
+
           border-radius: 50%;
+
           border: 2px solid #dbe6f3;
-          background: white;
+
+          background: #ffffff;
+
           color: #64748b;
+
           font-size: 12px;
+
           font-weight: 950;
         }
 
-        .stepper-item.active .step-circle {
-          color: white;
+        .stepper-item.active
+          .step-circle {
+          color: #ffffff;
+
           border-color: #0f9f6e;
+
           background: #0f9f6e;
-          box-shadow: 0 0 0 5px #e9f8f2;
+
+          box-shadow:
+            0 0 0 5px #e9f8f2;
         }
 
-        .stepper-item.completed .step-circle {
-          color: white;
+        .stepper-item.completed
+          .step-circle {
+          color: #ffffff;
+
           border-color: #0f9f6e;
+
           background: #0f9f6e;
         }
 
@@ -710,25 +774,31 @@ export default function Register() {
           font-weight: 850;
         }
 
-        .stepper-item.active .step-name {
+        .stepper-item.active
+          .step-name {
           color: #077a55;
         }
 
-        /* FORM */
+        /* ==================================================
+           FORM
+        ================================================== */
 
         .form-section {
-          animation: slideUp .3s ease both;
+          animation:
+            slideUp 0.3s ease both;
         }
 
         @keyframes slideUp {
           from {
             opacity: 0;
-            transform: translateY(8px);
+            transform:
+              translateY(8px);
           }
 
           to {
             opacity: 1;
-            transform: translateY(0);
+            transform:
+              translateY(0);
           }
         }
 
@@ -747,7 +817,8 @@ export default function Register() {
 
         .form-grid {
           display: grid;
-          grid-template-columns: 1fr 1fr;
+          grid-template-columns:
+            1fr 1fr;
           gap: 15px;
         }
 
@@ -786,9 +857,11 @@ export default function Register() {
           position: absolute;
           right: 10px;
           top: 50%;
-          transform: translateY(-50%);
+          transform:
+            translateY(-50%);
           border: 0;
-          background: transparent;
+          background:
+            transparent;
           color: #64748b;
           cursor: pointer;
           font-size: 11px;
@@ -818,7 +891,8 @@ export default function Register() {
         .strength-fill {
           height: 100%;
           border-radius: inherit;
-          transition: width .3s ease;
+          transition:
+            width 0.3s ease;
         }
 
         .strength-fill.weak {
@@ -832,6 +906,10 @@ export default function Register() {
         .strength-fill.strong {
           background: #0f9f6e;
         }
+
+        /* ==================================================
+           BANK BOX
+        ================================================== */
 
         .bank-box {
           padding: 16px;
@@ -863,6 +941,10 @@ export default function Register() {
           line-height: 1.5;
         }
 
+        /* ==================================================
+           INFO
+        ================================================== */
+
         .info-box {
           margin-top: 14px;
           padding: 13px;
@@ -887,7 +969,9 @@ export default function Register() {
           line-height: 1.6;
         }
 
-        /* REVIEW */
+        /* ==================================================
+           REVIEW
+        ================================================== */
 
         .review-card {
           display: grid;
@@ -900,7 +984,8 @@ export default function Register() {
           justify-content: space-between;
           gap: 15px;
           padding: 12px 0;
-          border-bottom: 1px solid #edf3f8;
+          border-bottom:
+            1px solid #edf3f8;
         }
 
         .review-row:last-child {
@@ -942,15 +1027,19 @@ export default function Register() {
           line-height: 1.55;
         }
 
-        /* ACTIONS */
+        /* ==================================================
+           ACTIONS
+        ================================================== */
 
         .actions {
           display: flex;
-          justify-content: space-between;
+          justify-content:
+            space-between;
           gap: 10px;
           margin-top: 24px;
           padding-top: 18px;
-          border-top: 1px solid #edf3f8;
+          border-top:
+            1px solid #edf3f8;
         }
 
         .actions-right {
@@ -974,11 +1063,17 @@ export default function Register() {
           cursor: pointer;
         }
 
-        /* SECURITY */
+        /* ==================================================
+           SECURITY
+        ================================================== */
 
         .security-row {
           display: grid;
-          grid-template-columns: repeat(3, 1fr);
+          grid-template-columns:
+            repeat(
+              3,
+              1fr
+            );
           gap: 8px;
           margin-top: 20px;
         }
@@ -1009,36 +1104,71 @@ export default function Register() {
           font-size: 9px;
         }
 
-        /* LOADING */
+        /* ==================================================
+           LOADING
+        ================================================== */
 
         .loading-overlay {
           position: fixed;
           inset: 0;
           z-index: 99999;
+
           display: grid;
           place-items: center;
+
           padding: 20px;
-          background: rgba(16,32,51,.52);
+
+          background:
+            rgba(
+              16,
+              32,
+              51,
+              0.52
+            );
+
           backdrop-filter: blur(10px);
         }
 
         .loading-card {
-          width: min(400px, 100%);
+          width: min(
+            400px,
+            100%
+          );
+
           padding: 30px;
+
           text-align: center;
+
           border-radius: 20px;
-          background: white;
-          box-shadow: 0 30px 90px rgba(16,32,51,.25);
+
+          background: #ffffff;
+
+          box-shadow:
+            0 30px 90px
+              rgba(
+                16,
+                32,
+                51,
+                0.25
+              );
         }
 
         .loading-orbit {
           width: 74px;
           height: 74px;
+
           margin: 0 auto 20px;
+
           border-radius: 50%;
-          border: 4px solid #e5f4ee;
-          border-top-color: #0f9f6e;
-          animation: spin 1s linear infinite;
+
+          border:
+            4px solid #e5f4ee;
+
+          border-top-color:
+            #0f9f6e;
+
+          animation:
+            spin 1s linear infinite;
         }
 
         .loading-card h3 {
@@ -1056,35 +1186,40 @@ export default function Register() {
 
         @keyframes spin {
           to {
-            transform: rotate(360deg);
+            transform:
+              rotate(360deg);
           }
         }
 
+        /* ==================================================
+           RESPONSIVE
+        ================================================== */
+
         @media (max-width: 850px) {
           .register-card {
-            grid-template-columns: 1fr;
+            grid-template-columns:
+              1fr;
           }
 
           .register-sidebar {
             min-height: auto;
           }
-
-          .wallet-preview {
-            max-width: 500px;
-          }
         }
 
         @media (max-width: 600px) {
           .register-content {
-            padding: 22px 16px;
+            padding:
+              22px 16px;
           }
 
           .content-header {
-            flex-direction: column;
+            flex-direction:
+              column;
           }
 
           .completion-box {
-            text-align: left;
+            text-align:
+              left;
           }
 
           .completion-track {
@@ -1092,7 +1227,8 @@ export default function Register() {
           }
 
           .form-grid {
-            grid-template-columns: 1fr;
+            grid-template-columns:
+              1fr;
             gap: 0;
           }
 
@@ -1109,16 +1245,19 @@ export default function Register() {
           }
 
           .actions {
-            flex-direction: column-reverse;
+            flex-direction:
+              column-reverse;
           }
 
           .actions-right {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns:
+              1fr 1fr;
           }
 
           .security-row {
-            grid-template-columns: 1fr 1fr 1fr;
+            grid-template-columns:
+              1fr 1fr 1fr;
           }
 
           .sidebar-title {
@@ -1135,7 +1274,10 @@ export default function Register() {
         <div className="register-container">
           <section className="card register-card">
 
-            {/* SIDEBAR */}
+            {/* ==================================================
+                SIDEBAR
+            ================================================== */}
+
             <aside className="register-sidebar">
 
               <img
@@ -1151,52 +1293,10 @@ export default function Register() {
               </h1>
 
               <p className="sidebar-copy">
-                Create your ElitePay profile and manage your wallet,
-                rewards, transactions and withdrawal preferences
-                from one place.
+                Create your ElitePay profile and manage
+                your rewards, transactions and withdrawal
+                preferences from one place.
               </p>
-
-              <div className="wallet-preview">
-
-                <div className="wallet-preview-top">
-                  <span className="wallet-label">
-                    Wallet Preview
-                  </span>
-
-                  <span className="status-pill">
-                    <span className="status-dot" />
-                    Ready
-                  </span>
-                </div>
-
-                <div className="preview-balance">
-                  ₦0.00
-                </div>
-
-                <div className="preview-grid">
-
-                  <div className="preview-item">
-                    <small>Wallet</small>
-                    <strong>Active</strong>
-                  </div>
-
-                  <div className="preview-item">
-                    <small>Currency</small>
-                    <strong>NGN</strong>
-                  </div>
-
-                  <div className="preview-item">
-                    <small>Rewards</small>
-                    <strong>Pulse Miner</strong>
-                  </div>
-
-                  <div className="preview-item">
-                    <small>Security</small>
-                    <strong>Protected</strong>
-                  </div>
-
-                </div>
-              </div>
 
               <div className="sidebar-features">
 
@@ -1204,6 +1304,7 @@ export default function Register() {
                   <span className="sidebar-feature-icon">
                     ✓
                   </span>
+
                   Wallet activity tracking
                 </div>
 
@@ -1211,6 +1312,7 @@ export default function Register() {
                   <span className="sidebar-feature-icon">
                     ✓
                   </span>
+
                   Saved withdrawal account
                 </div>
 
@@ -1218,6 +1320,7 @@ export default function Register() {
                   <span className="sidebar-feature-icon">
                     ✓
                   </span>
+
                   Transaction history
                 </div>
 
@@ -1225,6 +1328,7 @@ export default function Register() {
                   <span className="sidebar-feature-icon">
                     ✓
                   </span>
+
                   Account preferences
                 </div>
 
@@ -1232,14 +1336,17 @@ export default function Register() {
 
             </aside>
 
-            {/* CONTENT */}
+            {/* ==================================================
+                CONTENT
+            ================================================== */}
+
             <main className="register-content">
 
               <div className="content-header">
 
                 <div>
                   <span className="content-kicker">
-                    CREATE WALLET
+                    CREATE ACCOUNT
                   </span>
 
                   <h2 className="content-title">
@@ -1247,9 +1354,9 @@ export default function Register() {
                   </h2>
 
                   <p className="content-description">
-                    Set up your account in a few simple steps.
-                    You can update your bank details and
-                    preferences later from your wallet.
+                    Set up your account in a few simple
+                    steps. You can update your bank details
+                    and preferences later.
                   </p>
                 </div>
 
@@ -1267,7 +1374,8 @@ export default function Register() {
                     <div
                       className="completion-fill"
                       style={{
-                        width: `${profileProgress}%`,
+                        width:
+                          `${profileProgress}%`,
                       }}
                     />
                   </div>
@@ -1280,38 +1388,52 @@ export default function Register() {
 
               <div className="stepper">
 
-                {STEPS.map((item) => {
+                {STEPS.map(
+                  (item) => {
+                    const completed =
+                      step >
+                      item.number;
 
-                  const completed = step > item.number;
-                  const active = step === item.number;
+                    const active =
+                      step ===
+                      item.number;
 
-                  return (
-                    <div
-                      key={item.number}
-                      className={`stepper-item ${
-                        active ? 'active' : ''
-                      } ${
-                        completed ? 'completed' : ''
-                      }`}
-                    >
+                    return (
+                      <div
+                        key={
+                          item.number
+                        }
+                        className={`stepper-item ${
+                          active
+                            ? 'active'
+                            : ''
+                        } ${
+                          completed
+                            ? 'completed'
+                            : ''
+                        }`}
+                      >
 
-                      <div className="step-circle">
-                        {completed
-                          ? '✓'
-                          : item.number}
+                        <div className="step-circle">
+                          {completed
+                            ? '✓'
+                            : item.number}
+                        </div>
+
+                        <div className="step-name">
+                          {item.title}
+                        </div>
+
                       </div>
-
-                      <div className="step-name">
-                        {item.title}
-                      </div>
-
-                    </div>
-                  );
-                })}
+                    );
+                  }
+                )}
 
               </div>
 
-              {/* STEP 1 */}
+              {/* ==================================================
+                  STEP 1
+              ================================================== */}
 
               {step === 1 && (
                 <div className="form-section">
@@ -1322,7 +1444,7 @@ export default function Register() {
 
                   <p className="section-description">
                     Tell us the basic information needed
-                    to create your wallet profile.
+                    to create your account.
                   </p>
 
                   <div className="form-grid">
@@ -1342,8 +1464,13 @@ export default function Register() {
                         placeholder="Enter your full name"
                         value={name}
                         onChange={(e) => {
-                          setName(e.target.value);
-                          clearError('name');
+                          setName(
+                            e.target.value
+                          );
+
+                          clearError(
+                            'name'
+                          );
                         }}
                         disabled={loading}
                         autoComplete="name"
@@ -1377,11 +1504,22 @@ export default function Register() {
                         onChange={(e) => {
                           const digits =
                             e.target.value
-                              .replace(/\D/g, '')
-                              .slice(0, 11);
+                              .replace(
+                                /\D/g,
+                                ''
+                              )
+                              .slice(
+                                0,
+                                11
+                              );
 
-                          setPhone(digits);
-                          clearError('phone');
+                          setPhone(
+                            digits
+                          );
+
+                          clearError(
+                            'phone'
+                          );
                         }}
                         disabled={loading}
                       />
@@ -1402,7 +1540,10 @@ export default function Register() {
                       className="info-button"
                       type="button"
                       onClick={() =>
-                        setShowInfo((value) => !value)
+                        setShowInfo(
+                          (value) =>
+                            !value
+                        )
                       }
                     >
                       Why do we need this information?
@@ -1410,10 +1551,10 @@ export default function Register() {
 
                     {showInfo && (
                       <div className="info-content">
-                        Your name and phone number are used
-                        to identify your wallet profile and
-                        connect your account activity with
-                        your ElitePay session.
+                        Your name and phone number
+                        identify your account and connect
+                        your wallet activity with your
+                        ElitePay session.
                       </div>
                     )}
 
@@ -1422,18 +1563,20 @@ export default function Register() {
                 </div>
               )}
 
-              {/* STEP 2 */}
+              {/* ==================================================
+                  STEP 2
+              ================================================== */}
 
               {step === 2 && (
                 <div className="form-section">
 
                   <h3 className="section-title">
-                    Secure your wallet
+                    Secure your account
                   </h3>
 
                   <p className="section-description">
-                    Create a strong password that you can
-                    use to protect access to your account.
+                    Create a strong password to help
+                    protect access to your account.
                   </p>
 
                   <div className="field">
@@ -1458,8 +1601,13 @@ export default function Register() {
                         placeholder="Create a strong password"
                         value={password}
                         onChange={(e) => {
-                          setPassword(e.target.value);
-                          clearError('password');
+                          setPassword(
+                            e.target.value
+                          );
+
+                          clearError(
+                            'password'
+                          );
                         }}
                         disabled={loading}
                         autoComplete="new-password"
@@ -1470,7 +1618,8 @@ export default function Register() {
                         className="password-toggle"
                         onClick={() =>
                           setShowPassword(
-                            (value) => !value
+                            (value) =>
+                              !value
                           )
                         }
                       >
@@ -1490,18 +1639,24 @@ export default function Register() {
                           </span>
 
                           <strong>
-                            {passwordStrength.label}
+                            {
+                              passwordStrength.label
+                            }
                           </strong>
                         </div>
 
                         <div className="strength-track">
+
                           <div
-                            className={`strength-fill ${passwordStrength.className}`}
+                            className={`strength-fill ${
+                              passwordStrength.className
+                            }`}
                             style={{
                               width:
                                 passwordStrength.width,
                             }}
                           />
+
                         </div>
 
                       </div>
@@ -1533,11 +1688,14 @@ export default function Register() {
                           : 'password'
                       }
                       placeholder="Re-enter your password"
-                      value={confirmPassword}
+                      value={
+                        confirmPassword
+                      }
                       onChange={(e) => {
                         setConfirmPassword(
                           e.target.value
                         );
+
                         clearError(
                           'confirmPassword'
                         );
@@ -1548,7 +1706,9 @@ export default function Register() {
 
                     {errors.confirmPassword && (
                       <div className="field-error">
-                        {errors.confirmPassword}
+                        {
+                          errors.confirmPassword
+                        }
                       </div>
                     )}
 
@@ -1558,8 +1718,10 @@ export default function Register() {
 
                     <strong
                       style={{
-                        color: '#102033',
-                        fontSize: 12,
+                        color:
+                          '#102033',
+                        fontSize:
+                          12,
                       }}
                     >
                       Security tips
@@ -1567,9 +1729,9 @@ export default function Register() {
 
                     <div className="info-content">
                       Use at least 8 characters and
-                      combine letters, numbers and
-                      symbols. Avoid using passwords
-                      that you use on other websites.
+                      combine letters, numbers and symbols.
+                      Avoid reusing passwords from other
+                      websites.
                     </div>
 
                   </div>
@@ -1577,7 +1739,9 @@ export default function Register() {
                 </div>
               )}
 
-              {/* STEP 3 */}
+              {/* ==================================================
+                  STEP 3
+              ================================================== */}
 
               {step === 3 && (
                 <div className="form-section">
@@ -1597,10 +1761,10 @@ export default function Register() {
                     </div>
 
                     <div className="bank-note">
-                      Add your bank account now for
-                      faster withdrawal forms later.
-                      You can also skip this step and
-                      add an account from your wallet.
+                      Add your bank account now for faster
+                      withdrawal forms later. You can also
+                      skip this step and add an account from
+                      your wallet.
                     </div>
 
                     <div className="field">
@@ -1617,8 +1781,13 @@ export default function Register() {
                         className="input"
                         value={bank}
                         onChange={(e) => {
-                          setBank(e.target.value);
-                          clearError('bank');
+                          setBank(
+                            e.target.value
+                          );
+
+                          clearError(
+                            'bank'
+                          );
                         }}
                         disabled={loading}
                       >
@@ -1626,14 +1795,20 @@ export default function Register() {
                           Select your bank
                         </option>
 
-                        {BANKS.map((item) => (
-                          <option
-                            key={item}
-                            value={item}
-                          >
-                            {item}
-                          </option>
-                        ))}
+                        {BANKS.map(
+                          (item) => (
+                            <option
+                              key={
+                                item
+                              }
+                              value={
+                                item
+                              }
+                            >
+                              {item}
+                            </option>
+                          )
+                        )}
 
                       </select>
 
@@ -1658,16 +1833,27 @@ export default function Register() {
                         id="account-number"
                         className="input"
                         placeholder="10-digit account number"
-                        value={accountNumber}
+                        value={
+                          accountNumber
+                        }
                         maxLength={10}
                         inputMode="numeric"
                         onChange={(e) => {
                           const digits =
                             e.target.value
-                              .replace(/\D/g, '')
-                              .slice(0, 10);
+                              .replace(
+                                /\D/g,
+                                ''
+                              )
+                              .slice(
+                                0,
+                                10
+                              );
 
-                          setAccountNumber(digits);
+                          setAccountNumber(
+                            digits
+                          );
+
                           clearError(
                             'accountNumber'
                           );
@@ -1677,7 +1863,9 @@ export default function Register() {
 
                       {errors.accountNumber && (
                         <div className="field-error">
-                          {errors.accountNumber}
+                          {
+                            errors.accountNumber
+                          }
                         </div>
                       )}
 
@@ -1696,11 +1884,14 @@ export default function Register() {
                         id="account-name"
                         className="input"
                         placeholder="Name on bank account"
-                        value={accountName}
+                        value={
+                          accountName
+                        }
                         onChange={(e) => {
                           setAccountName(
                             e.target.value
                           );
+
                           clearError(
                             'accountName'
                           );
@@ -1710,7 +1901,9 @@ export default function Register() {
 
                       {errors.accountName && (
                         <div className="field-error">
-                          {errors.accountName}
+                          {
+                            errors.accountName
+                          }
                         </div>
                       )}
 
@@ -1721,13 +1914,15 @@ export default function Register() {
                 </div>
               )}
 
-              {/* STEP 4 */}
+              {/* ==================================================
+                  STEP 4
+              ================================================== */}
 
               {step === 4 && (
                 <div className="form-section">
 
                   <h3 className="section-title">
-                    Review your wallet
+                    Review your account
                   </h3>
 
                   <p className="section-description">
@@ -1743,7 +1938,8 @@ export default function Register() {
                       </span>
 
                       <span className="review-value">
-                        {name || 'Not provided'}
+                        {name ||
+                          'Not provided'}
                       </span>
                     </div>
 
@@ -1753,7 +1949,8 @@ export default function Register() {
                       </span>
 
                       <span className="review-value">
-                        {phone || 'Not provided'}
+                        {phone ||
+                          'Not provided'}
                       </span>
                     </div>
 
@@ -1775,7 +1972,8 @@ export default function Register() {
                       </span>
 
                       <span className="review-value">
-                        {bank || 'Not added'}
+                        {bank ||
+                          'Not added'}
                       </span>
                     </div>
 
@@ -1786,7 +1984,9 @@ export default function Register() {
 
                       <span className="review-value">
                         {accountNumber
-                          ? `****${accountNumber.slice(-4)}`
+                          ? `****${accountNumber.slice(
+                              -4
+                            )}`
                           : 'Not added'}
                       </span>
                     </div>
@@ -1802,7 +2002,10 @@ export default function Register() {
                         setAccept(
                           e.target.checked
                         );
-                        clearError('accept');
+
+                        clearError(
+                          'accept'
+                        );
                       }}
                       disabled={loading}
                     />
@@ -1825,7 +2028,9 @@ export default function Register() {
                 </div>
               )}
 
-              {/* ACTIONS */}
+              {/* ==================================================
+                  ACTIONS
+              ================================================== */}
 
               <div className="actions">
 
@@ -1834,7 +2039,10 @@ export default function Register() {
                   type="button"
                   onClick={
                     step === 1
-                      ? () => router.push('/')
+                      ? () =>
+                          router.push(
+                            '/'
+                          )
                       : previousStep
                   }
                   disabled={loading}
@@ -1850,7 +2058,9 @@ export default function Register() {
                     <button
                       className="btn"
                       type="button"
-                      onClick={nextStep}
+                      onClick={
+                        nextStep
+                      }
                       disabled={loading}
                     >
                       Continue
@@ -1859,10 +2069,12 @@ export default function Register() {
                     <button
                       className="btn"
                       type="button"
-                      onClick={createAccount}
+                      onClick={
+                        createAccount
+                      }
                       disabled={loading}
                     >
-                      Create Wallet
+                      Create Account
                     </button>
                   )}
 
@@ -1870,40 +2082,63 @@ export default function Register() {
 
               </div>
 
+              {/* SECURITY FEATURES */}
+
               <div className="security-row">
 
                 <div className="security-item">
                   <div className="security-icon">
                     🔒
                   </div>
-                  <strong>Secure</strong>
-                  <span>Account protection</span>
+
+                  <strong>
+                    Secure
+                  </strong>
+
+                  <span>
+                    Account protection
+                  </span>
                 </div>
 
                 <div className="security-item">
                   <div className="security-icon">
                     ⚡
                   </div>
-                  <strong>Simple</strong>
-                  <span>Easy onboarding</span>
+
+                  <strong>
+                    Simple
+                  </strong>
+
+                  <span>
+                    Easy onboarding
+                  </span>
                 </div>
 
                 <div className="security-item">
                   <div className="security-icon">
                     ✓
                   </div>
-                  <strong>Organized</strong>
-                  <span>Wallet records</span>
+
+                  <strong>
+                    Organized
+                  </strong>
+
+                  <span>
+                    Wallet records
+                  </span>
                 </div>
 
               </div>
 
               <div className="login-link">
                 Already have an account?{' '}
+
                 <button
                   type="button"
                   onClick={() =>
-                    router.push('/login')
+                    router.push(
+                      '/login'
+                    )
                   }
                   disabled={loading}
                 >
@@ -1917,6 +2152,10 @@ export default function Register() {
         </div>
       </div>
 
+      {/* ==================================================
+          LOADING
+      ================================================== */}
+
       {loading && (
         <div
           className="loading-overlay"
@@ -1927,7 +2166,9 @@ export default function Register() {
 
             <div className="loading-orbit" />
 
-            <h3>{loadingMessage}</h3>
+            <h3>
+              {loadingMessage}
+            </h3>
 
             <p>
               Setting up your ElitePay experience...
