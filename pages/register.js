@@ -1155,49 +1155,7 @@ export default function Register() {
                 rewards, transactions and withdrawal preferences
                 from one place.
               </p>
-
-              <div className="wallet-preview">
-
-                <div className="wallet-preview-top">
-                  <span className="wallet-label">
-                    Wallet Preview
-                  </span>
-
-                  <span className="status-pill">
-                    <span className="status-dot" />
-                    Ready
-                  </span>
-                </div>
-
-                <div className="preview-balance">
-                  ₦0.00
-                </div>
-
-                <div className="preview-grid">
-
-                  <div className="preview-item">
-                    <small>Wallet</small>
-                    <strong>Active</strong>
-                  </div>
-
-                  <div className="preview-item">
-                    <small>Currency</small>
-                    <strong>NGN</strong>
-                  </div>
-
-                  <div className="preview-item">
-                    <small>Rewards</small>
-                    <strong>Pulse Miner</strong>
-                  </div>
-
-                  <div className="preview-item">
-                    <small>Security</small>
-                    <strong>Protected</strong>
-                  </div>
-
-                </div>
-              </div>
-
+              
               <div className="sidebar-features">
 
                 <div className="sidebar-feature">
