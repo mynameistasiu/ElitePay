@@ -1,4 +1,5 @@
 // pages/buy-code.js
+
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
 import { motion, AnimatePresence } from "framer-motion";
@@ -7,13 +8,9 @@ import { loadUser, saveTx } from "../utils/storage";
 
 const CODE_PRICE = 7000;
 
-// WhatsApp support number — kept clean to avoid hidden Unicode characters.
+// WhatsApp support number.
+// Keep it clean: country code + number, without +, spaces or hidden characters.
 const WA_NUMBER = "2348068991240";
-
-const ONLINE_PAYMENT_URL =
-  "https://checkout.korapay.com/pay/elitepayng";
-
-const ONLINE_RETURN_PATH = "/code?payment=online";
 
 function LockIcon({ size = 24 }) {
   return (
@@ -167,6 +164,9 @@ export default function BuyCode() {
   const nameInputRef = useRef(null);
   const buyButtonRef = useRef(null);
 
+  /*
+   * Load logged-in user
+   */
   useEffect(() => {
     const savedUser = loadUser();
 
@@ -180,6 +180,9 @@ export default function BuyCode() {
     setPhone(savedUser.phone || "");
   }, [router]);
 
+  /*
+   * Normalize Nigerian phone numbers
+   */
   const normalizePhone = (value) => {
     let normalized = String(value || "").replace(/\s+/g, "");
 
@@ -190,6 +193,9 @@ export default function BuyCode() {
     return normalized.replace(/[^0-9]/g, "").slice(0, 11);
   };
 
+  /*
+   * Open confirmation modal
+   */
   const handleBuyClick = (event) => {
     event.preventDefault();
 
@@ -197,6 +203,9 @@ export default function BuyCode() {
     setShowModal(true);
   };
 
+  /*
+   * Modal focus + keyboard control
+   */
   useEffect(() => {
     if (!showModal) {
       if (buyButtonRef.current) {
@@ -207,7 +216,6 @@ export default function BuyCode() {
     }
 
     const previousOverflow = document.body.style.overflow;
-
     document.body.style.overflow = "hidden";
 
     const focusTimer = setTimeout(() => {
@@ -229,7 +237,7 @@ export default function BuyCode() {
       if (!modal) return;
 
       const focusable = modal.querySelectorAll(
-        'button:not([disabled]), input, a[href]'
+        'button:not([disabled]), input:not([disabled]), a[href]'
       );
 
       if (!focusable.length) return;
@@ -255,6 +263,10 @@ export default function BuyCode() {
     };
   }, [showModal, processing]);
 
+  /*
+   * WhatsApp support only.
+   * Payment is NOT handled through WhatsApp.
+   */
   const openWhatsAppSupport = () => {
     const message =
       `Hello ElitePay Support, I need assistance with my withdrawal code purchase.\n\n` +
@@ -262,16 +274,36 @@ export default function BuyCode() {
       `Phone: ${phone || "Not provided"}\n` +
       `Amount: NGN ${CODE_PRICE.toLocaleString()}`;
 
-    const url = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(
-      message
-    )}`;
+    const whatsappUrl =
+      `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(message)}`;
 
-    window.open(url, "_blank", "noopener,noreferrer");
+    window.open(whatsappUrl, "_blank", "noopener,noreferrer");
   };
 
+  /*
+   * ---------------------------------------------------------
+   * PROCEED TO YOUR OWN CHECKOUT PAGE
+   * ---------------------------------------------------------
+   *
+   * IMPORTANT:
+   * This does NOT redirect directly to Korapay.
+   *
+   * It sends the customer to:
+   *
+   * /checkout?name=...&phone=...
+   *
+   * Your checkout page can then handle the actual online payment.
+   */
   const openOnlinePayment = () => {
-    const nameToUse = (confirmName || user?.fullName || "").trim();
-    const phoneToUse = normalizePhone(phone || user?.phone || "");
+    const nameToUse = (
+      confirmName ||
+      user?.fullName ||
+      ""
+    ).trim();
+
+    const phoneToUse = normalizePhone(
+      phone || user?.phone || ""
+    );
 
     if (!nameToUse) {
       alert(
@@ -289,53 +321,54 @@ export default function BuyCode() {
 
     setProcessing(true);
 
+    /*
+     * Save transaction locally before going to checkout.
+     */
     try {
-      const redirectUrl = new URL(
-        ONLINE_RETURN_PATH,
-        window.location.origin
-      ).toString();
-
-      const paymentUrl = new URL(ONLINE_PAYMENT_URL);
-
-      /*
-       * Keep your payment gateway URL while attaching the return URL.
-       * Your gateway should return the customer to /code?payment=online
-       * after payment processing.
-       */
-      paymentUrl.searchParams.set("redirect_url", redirectUrl);
-
       saveTx({
         type: "buy_code",
         amount: CODE_PRICE,
         status: "pending",
         meta: {
-          gateway: "korapay",
+          gateway: "online",
           payment_method: "online",
           customer_name: nameToUse,
           customer_phone: phoneToUse,
-          redirect_url: redirectUrl,
+          checkout_path: "/checkout",
         },
         created_at: new Date().toISOString(),
       });
-
-      setTimeout(() => {
-        window.location.assign(paymentUrl.toString());
-      }, 500);
     } catch (error) {
-      console.error("Payment initialization error:", error);
-      setProcessing(false);
-
-      alert(
-        "Unable to start the online payment. Please check your internet connection and try again."
+      console.error(
+        "Could not save pending transaction:",
+        error
       );
     }
+
+    /*
+     * Build OUR checkout URL.
+     */
+    const checkoutUrl =
+      `/checkout?name=${encodeURIComponent(
+        nameToUse
+      )}&phone=${encodeURIComponent(phoneToUse)}`;
+
+    /*
+     * Small delay to show the loading state.
+     */
+    setTimeout(() => {
+      router.push(checkoutUrl);
+    }, 500);
   };
 
   return (
     <Layout title="Buy Withdrawal Code - ElitePay">
       <div className="buy-code-shell">
         <div className="buy-code-container">
-          {/* HEADER */}
+
+          {/* ================================
+              HERO
+          ================================= */}
           <motion.section
             className="hero-section"
             initial={{ opacity: 0, y: 14 }}
@@ -352,13 +385,16 @@ export default function BuyCode() {
             <p className="hero-description">
               Purchase your ElitePay withdrawal activation code securely
               online. Your payment is processed electronically and your
-              activation will be handled automatically after successful
-              payment confirmation.
+              purchase will be confirmed automatically after successful
+              payment verification.
             </p>
 
             <div className="hero-price">
               <div>
-                <span className="price-caption">Activation Code</span>
+                <span className="price-caption">
+                  Activation Code
+                </span>
+
                 <span className="price-value">
                   ₦{CODE_PRICE.toLocaleString()}
                 </span>
@@ -370,12 +406,17 @@ export default function BuyCode() {
             </div>
           </motion.section>
 
-          {/* PAYMENT CARD */}
+          {/* ================================
+              ONLINE PAYMENT CARD
+          ================================= */}
           <motion.section
             className="payment-card"
             initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1, duration: 0.45 }}
+            transition={{
+              delay: 0.1,
+              duration: 0.45,
+            }}
           >
             <div className="payment-card-top">
               <div className="payment-method-icon">
@@ -390,7 +431,7 @@ export default function BuyCode() {
                 <h2>Online Payment</h2>
 
                 <p>
-                  Pay securely using your available online payment option.
+                  Secure electronic payment for your withdrawal code.
                 </p>
               </div>
 
@@ -401,82 +442,111 @@ export default function BuyCode() {
 
             <div className="payment-divider" />
 
+            {/* PAYMENT SUMMARY */}
             <div className="payment-summary">
               <div className="summary-row">
                 <span>Product</span>
-                <strong>Withdrawal Activation Code</strong>
+
+                <strong>
+                  Withdrawal Activation Code
+                </strong>
               </div>
 
               <div className="summary-row">
                 <span>Payment type</span>
-                <strong>Online / Automatic</strong>
+
+                <strong>
+                  Online / Automatic
+                </strong>
               </div>
 
               <div className="summary-row total-row">
                 <span>Total amount</span>
+
                 <strong>
                   ₦{CODE_PRICE.toLocaleString()}
                 </strong>
               </div>
             </div>
 
+            {/* FEATURES */}
             <div className="benefits">
               <div className="benefit-item">
                 <span className="benefit-icon">
                   <CheckIcon />
                 </span>
-                <span>Secure online payment</span>
+
+                <span>
+                  Secure online payment
+                </span>
               </div>
 
               <div className="benefit-item">
                 <span className="benefit-icon">
                   <CheckIcon />
                 </span>
-                <span>Automatic payment verification</span>
+
+                <span>
+                  Automatic verification
+                </span>
               </div>
 
               <div className="benefit-item">
                 <span className="benefit-icon">
                   <CheckIcon />
                 </span>
-                <span>Fast activation after confirmation</span>
+
+                <span>
+                  Fast activation
+                </span>
               </div>
             </div>
 
+            {/* MAIN BUTTON */}
             <button
               className="primary-payment-button"
               onClick={handleBuyClick}
               type="button"
             >
-              <span>Continue to Online Payment</span>
+              <span>
+                Continue to Online Payment
+              </span>
+
               <ArrowIcon />
             </button>
 
             <div className="secure-payment-note">
               <LockIcon size={14} />
+
               <span>
-                You will be redirected to our secure payment gateway.
+                You will continue to our secure checkout page.
               </span>
             </div>
           </motion.section>
 
-          {/* SUPPORT */}
+          {/* ================================
+              SUPPORT
+          ================================= */}
           <motion.section
             className="support-card"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 0.22 }}
+            transition={{
+              delay: 0.22,
+            }}
           >
             <div className="support-icon">
               <SupportIcon />
             </div>
 
             <div className="support-content">
-              <h3>Need help with your payment?</h3>
+              <h3>
+                Need help with your payment?
+              </h3>
 
               <p>
-                Contact ElitePay support if you have any difficulty completing
-                your online payment.
+                Contact ElitePay support if you have any difficulty
+                completing your online payment.
               </p>
             </div>
 
@@ -491,12 +561,15 @@ export default function BuyCode() {
 
           <div className="footer-note">
             <LockIcon size={13} />
+
             <span>
               Secure checkout • Online payment • Automatic verification
             </span>
           </div>
 
-          {/* CONFIRMATION MODAL */}
+          {/* ================================
+              CONFIRMATION MODAL
+          ================================= */}
           <AnimatePresence>
             {showModal && (
               <motion.div
@@ -536,7 +609,9 @@ export default function BuyCode() {
                     stiffness: 340,
                     damping: 27,
                   }}
-                  onClick={(event) => event.stopPropagation()}
+                  onClick={(event) =>
+                    event.stopPropagation()
+                  }
                 >
                   <div className="modal-icon">
                     <CreditCardIcon size={25} />
@@ -548,41 +623,57 @@ export default function BuyCode() {
                     </h3>
 
                     <p>
-                      Please confirm the information below before continuing
-                      to secure online payment.
+                      Confirm your information before continuing to your
+                      online checkout.
                     </p>
                   </div>
 
+                  {/* DETAILS PREVIEW */}
                   <div className="customer-details">
                     <div className="detail-row">
-                      <span>Full name</span>
+                      <span>
+                        Full name
+                      </span>
+
                       <strong>
-                        {confirmName || "Not provided"}
+                        {confirmName ||
+                          "Not provided"}
                       </strong>
                     </div>
 
                     <div className="detail-row">
-                      <span>Phone number</span>
+                      <span>
+                        Phone number
+                      </span>
+
                       <strong>
-                        {phone || "Not provided"}
+                        {phone ||
+                          "Not provided"}
                       </strong>
                     </div>
 
                     <div className="detail-row">
-                      <span>Purchase</span>
+                      <span>
+                        Purchase
+                      </span>
+
                       <strong>
                         Withdrawal Code
                       </strong>
                     </div>
 
                     <div className="detail-row">
-                      <span>Amount</span>
+                      <span>
+                        Amount
+                      </span>
+
                       <strong>
                         ₦{CODE_PRICE.toLocaleString()}
                       </strong>
                     </div>
                   </div>
 
+                  {/* NAME */}
                   <div className="form-field">
                     <label htmlFor="confirm-name">
                       Full Name
@@ -593,13 +684,17 @@ export default function BuyCode() {
                       ref={nameInputRef}
                       value={confirmName}
                       onChange={(event) =>
-                        setConfirmName(event.target.value)
+                        setConfirmName(
+                          event.target.value
+                        )
                       }
                       disabled={processing}
                       placeholder="Enter your full name"
+                      autoComplete="name"
                     />
                   </div>
 
+                  {/* PHONE */}
                   <div className="form-field">
                     <label htmlFor="confirm-phone">
                       Phone Number
@@ -609,11 +704,14 @@ export default function BuyCode() {
                       id="confirm-phone"
                       value={phone}
                       onChange={(event) =>
-                        setPhone(event.target.value)
+                        setPhone(
+                          event.target.value
+                        )
                       }
                       disabled={processing}
                       placeholder="Enter your phone number"
                       inputMode="tel"
+                      autoComplete="tel"
                     />
                   </div>
 
@@ -621,15 +719,19 @@ export default function BuyCode() {
                     <LockIcon size={15} />
 
                     <span>
-                      Your details will be used to identify your payment and
-                      activate your purchase.
+                      Your details will be carried securely to the ElitePay
+                      checkout page for this transaction.
                     </span>
                   </div>
 
                   <div className="modal-actions">
+
+                    {/* PROCEED */}
                     <button
                       className="continue-button"
-                      onClick={openOnlinePayment}
+                      onClick={
+                        openOnlinePayment
+                      }
                       disabled={
                         !confirmName.trim() ||
                         !phone.trim() ||
@@ -640,19 +742,26 @@ export default function BuyCode() {
                       {processing ? (
                         <span className="button-loading">
                           <Spinner />
-                          Preparing secure payment...
+
+                          Preparing checkout...
                         </span>
                       ) : (
                         <>
-                          <span>Proceed to Secure Payment</span>
+                          <span>
+                            Proceed to Secure Payment
+                          </span>
+
                           <ArrowIcon />
                         </>
                       )}
                     </button>
 
+                    {/* CANCEL */}
                     <button
                       className="cancel-button"
-                      onClick={() => setShowModal(false)}
+                      onClick={() =>
+                        setShowModal(false)
+                      }
                       disabled={processing}
                       type="button"
                     >
@@ -661,7 +770,7 @@ export default function BuyCode() {
                   </div>
 
                   <div className="gateway-note">
-                    Secure payment powered by your online payment gateway.
+                    You will remain on the ElitePay checkout flow.
                   </div>
                 </motion.div>
               </motion.div>
@@ -778,7 +887,8 @@ export default function BuyCode() {
           background: #ffffff;
           border: 1px solid #e2e8f0;
           border-radius: 20px;
-          box-shadow: 0 20px 60px rgba(15, 23, 42, 0.09);
+          box-shadow:
+            0 20px 60px rgba(15, 23, 42, 0.09);
         }
 
         .payment-card-top {
@@ -844,6 +954,8 @@ export default function BuyCode() {
           background: #eef2f7;
         }
 
+        /* SUMMARY */
+
         .payment-summary {
           padding: 18px 20px 8px;
         }
@@ -881,6 +993,8 @@ export default function BuyCode() {
           font-weight: 950;
         }
 
+        /* BENEFITS */
+
         .benefits {
           display: grid;
           grid-template-columns: repeat(3, 1fr);
@@ -916,6 +1030,8 @@ export default function BuyCode() {
           color: #15803d;
         }
 
+        /* PAYMENT BUTTON */
+
         .primary-payment-button {
           width: calc(100% - 40px);
           margin: 0 20px;
@@ -926,12 +1042,17 @@ export default function BuyCode() {
           border: 0;
           border-radius: 13px;
           padding: 15px 18px;
-          background: linear-gradient(135deg, #2563eb, #1d4ed8);
+          background: linear-gradient(
+            135deg,
+            #2563eb,
+            #1d4ed8
+          );
           color: #ffffff;
           font-size: 14px;
           font-weight: 950;
           cursor: pointer;
-          box-shadow: 0 16px 30px rgba(37, 99, 235, 0.22);
+          box-shadow:
+            0 16px 30px rgba(37, 99, 235, 0.22);
           transition:
             transform 0.16s ease,
             box-shadow 0.16s ease;
@@ -939,7 +1060,8 @@ export default function BuyCode() {
 
         .primary-payment-button:hover {
           transform: translateY(-1px);
-          box-shadow: 0 19px 35px rgba(37, 99, 235, 0.26);
+          box-shadow:
+            0 19px 35px rgba(37, 99, 235, 0.26);
         }
 
         .secure-payment-note {
@@ -964,7 +1086,8 @@ export default function BuyCode() {
           background: #ffffff;
           border: 1px solid #e2e8f0;
           border-radius: 15px;
-          box-shadow: 0 10px 25px rgba(15, 23, 42, 0.05);
+          box-shadow:
+            0 10px 25px rgba(15, 23, 42, 0.05);
         }
 
         .support-icon {
@@ -1042,7 +1165,8 @@ export default function BuyCode() {
           background: #ffffff;
           border-radius: 19px;
           border: 1px solid #e2e8f0;
-          box-shadow: 0 30px 90px rgba(15, 23, 42, 0.3);
+          box-shadow:
+            0 30px 90px rgba(15, 23, 42, 0.3);
         }
 
         .modal-icon {
@@ -1109,6 +1233,8 @@ export default function BuyCode() {
           font-weight: 900;
         }
 
+        /* FORM */
+
         .form-field {
           margin-bottom: 13px;
         }
@@ -1135,7 +1261,8 @@ export default function BuyCode() {
 
         .form-field input:focus {
           border-color: #2563eb;
-          box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+          box-shadow:
+            0 0 0 3px rgba(37, 99, 235, 0.1);
         }
 
         .form-field input:disabled {
@@ -1170,12 +1297,17 @@ export default function BuyCode() {
           border: 0;
           border-radius: 12px;
           padding: 14px 16px;
-          background: linear-gradient(135deg, #2563eb, #1d4ed8);
+          background: linear-gradient(
+            135deg,
+            #2563eb,
+            #1d4ed8
+          );
           color: #ffffff;
           font-size: 13px;
           font-weight: 950;
           cursor: pointer;
-          box-shadow: 0 14px 28px rgba(37, 99, 235, 0.2);
+          box-shadow:
+            0 14px 28px rgba(37, 99, 235, 0.2);
         }
 
         .continue-button:disabled {
