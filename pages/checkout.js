@@ -70,28 +70,68 @@ function AlertIcon({ size = 22 }) {
   );
 }
 
-function MoniepointMark() {
+/*
+=========================================================
+NOMBA MFB LOGO
+=========================================================
+This logo is created completely with inline SVG.
+No image file is required in /public.
+=========================================================
+*/
+
+function NombaMfbMark() {
   return (
-    <div className="moniepoint-mark" aria-hidden="true">
+    <div className="nomba-mfb-mark" aria-label="NOMBA MFB logo">
       <svg
-        width="42"
-        height="42"
+        width="48"
+        height="48"
         viewBox="0 0 100 100"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
+        role="img"
       >
-        <circle cx="50" cy="50" r="50" fill="#0866C6" />
-        <text
-          x="50"
-          y="60"
-          textAnchor="middle"
-          fontFamily="Arial, sans-serif"
-          fontSize="65"
-          fontWeight="bold"
+        {/* Black rounded background */}
+        <rect
+          x="0"
+          y="0"
+          width="100"
+          height="100"
+          rx="20"
+          fill="#111111"
+        />
+
+        {/* Stylised NOMBA symbol */}
+        <path
+          d="M17 20
+             L50 39
+             L83 20
+             L83 39
+             L50 58
+             L17 39
+             Z"
           fill="white"
-        >
-          M
-        </text>
+        />
+
+        <path
+          d="M17 61
+             L50 42
+             L83 61
+             L83 80
+             L50 61
+             L17 80
+             Z"
+          fill="white"
+        />
+
+        {/* Central crossing detail */}
+        <path
+          d="M50 39
+             L50 58
+             L67 68
+             L67 49
+             Z"
+          fill="#111111"
+        />
       </svg>
     </div>
   );
@@ -192,11 +232,9 @@ export default function Checkout() {
 
     setCheckingPayment(true);
 
-    // Keep loading animation for exactly 5 seconds.
     verificationTimerRef.current = setTimeout(() => {
       setCheckingPayment(false);
 
-      // Save the transaction as failed/pending verification.
       saveTx({
         type: 'buy_code',
         amount: CODE_PRICE,
@@ -221,7 +259,6 @@ export default function Checkout() {
   const closeFailedPopupAndRefresh = () => {
     setPaymentFailed(false);
 
-    // Refresh automatically after popup disappears.
     setTimeout(() => {
       window.location.reload();
     }, 150);
@@ -238,7 +275,6 @@ export default function Checkout() {
       return;
     }
 
-    // Maximum 10MB
     if (selectedFile.size > 10 * 1024 * 1024) {
       alert('Receipt is too large. Please select a file below 10MB.');
       event.target.value = '';
@@ -289,7 +325,6 @@ export default function Checkout() {
     setTimeout(() => {
       setVendorSubmitting(false);
 
-      // Opens a chat directly with the configured vendor number.
       window.location.href = buildWhatsAppUrl(message);
     }, 500);
   };
@@ -343,6 +378,29 @@ export default function Checkout() {
           font-size: 11px;
           font-weight: 900;
           letter-spacing: 0.04em;
+        }
+
+        /* =====================================================
+           NOMBA MFB CODE-GENERATED LOGO
+        ====================================================== */
+
+        .nomba-mfb-mark {
+          width: 48px;
+          height: 48px;
+          border-radius: 12px;
+          overflow: hidden;
+          flex-shrink: 0;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background: #111111;
+          box-shadow: 0 7px 18px rgba(0, 0, 0, 0.12);
+        }
+
+        .nomba-mfb-mark svg {
+          width: 100%;
+          height: 100%;
+          display: block;
         }
 
         .bank-illustration {
@@ -419,21 +477,6 @@ export default function Checkout() {
           align-items: center;
           gap: 10px;
           margin-bottom: 15px;
-        }
-
-        .moniepoint-mark {
-          width: 42px;
-          height: 42px;
-          border-radius: 11px;
-          overflow: hidden;
-          flex-shrink: 0;
-          box-shadow: 0 7px 18px rgba(0, 0, 0, 0.1);
-        }
-
-        .moniepoint-mark svg {
-          width: 100%;
-          height: 100%;
-          display: block;
         }
 
         .bank-name {
@@ -934,6 +977,12 @@ export default function Checkout() {
           .account-number {
             font-size: 24px;
           }
+
+          .nomba-mfb-mark {
+            width: 44px;
+            height: 44px;
+            border-radius: 11px;
+          }
         }
       `}</style>
 
@@ -956,13 +1005,34 @@ export default function Checkout() {
               aria-hidden="true"
             >
               <path d="M42 4 14 18v6h56v-6L42 4Z" fill="#cbd5e1" />
+
               <path
                 d="M20 28h8v22h-8V28Zm18 0h8v22h-8V28Zm18 0h8v22h-8V28Z"
                 fill="#94a3b8"
               />
-              <path d="M14 52h56v7H14v-7Z" fill="#cbd5e1" />
-              <circle cx="24" cy="49" r="10" fill="#d9e2ec" stroke="#94a3b8" strokeWidth="2" />
-              <circle cx="60" cy="49" r="10" fill="#d9e2ec" stroke="#94a3b8" strokeWidth="2" />
+
+              <path
+                d="M14 52h56v7H14v-7Z"
+                fill="#cbd5e1"
+              />
+
+              <circle
+                cx="24"
+                cy="49"
+                r="10"
+                fill="#d9e2ec"
+                stroke="#94a3b8"
+                strokeWidth="2"
+              />
+
+              <circle
+                cx="60"
+                cy="49"
+                r="10"
+                fill="#d9e2ec"
+                stroke="#94a3b8"
+                strokeWidth="2"
+              />
             </svg>
           </div>
 
@@ -996,11 +1066,15 @@ export default function Checkout() {
           <div className="account-card">
             <div className="account-main">
               <div className="bank-row">
-                <MoniepointMark />
+                {/* CODE-GENERATED NOMBA MFB LOGO */}
+                <NombaMfbMark />
 
                 <div style={{ textAlign: 'left' }}>
                   <span className="bank-label">Bank name</span>
-                  <div className="bank-name">{BANK_NAME}</div>
+
+                  <div className="bank-name">
+                    {BANK_NAME}
+                  </div>
                 </div>
               </div>
 
@@ -1021,12 +1095,17 @@ export default function Checkout() {
                 </button>
               </div>
 
-              <div className="account-name">{ACCOUNT_NAME}</div>
+              <div className="account-name">
+                {ACCOUNT_NAME}
+              </div>
             </div>
 
             <div className="warning-footer">
               <span className="minus">-</span>
-              <span>Do not save or reuse this account number.</span>
+
+              <span>
+                Do not save or reuse this account number.
+              </span>
             </div>
           </div>
 
@@ -1037,6 +1116,7 @@ export default function Checkout() {
           <div className="progress-section">
             <div className="progress-label">
               <span>Payment window</span>
+
               <span>
                 {minutes}:{seconds}
               </span>
@@ -1045,7 +1125,9 @@ export default function Checkout() {
             <div className="progress-wrap">
               <div
                 className="progress-bar"
-                style={{ width: `${progressPercentage}%` }}
+                style={{
+                  width: `${progressPercentage}%`,
+                }}
               />
             </div>
 
@@ -1105,7 +1187,8 @@ export default function Checkout() {
                   `Phone: ${phone || 'Not provided'}\n` +
                   `Amount: NGN ${CODE_PRICE.toLocaleString()}`;
 
-                window.location.href = buildWhatsAppUrl(helpMessage);
+                window.location.href =
+                  buildWhatsAppUrl(helpMessage);
               }}
               type="button"
             >
@@ -1118,6 +1201,7 @@ export default function Checkout() {
       {/* =====================================================
           PAYMENT VERIFICATION LOADING MODAL
       ====================================================== */}
+
       {checkingPayment && (
         <div className="modal-overlay">
           <div className="modal failed-modal">
@@ -1132,11 +1216,13 @@ export default function Checkout() {
               <Spinner />
             </div>
 
-            <h2 className="modal-title">Checking Payment</h2>
+            <h2 className="modal-title">
+              Checking Payment
+            </h2>
 
             <p className="modal-text">
-              We are checking your transaction. Please do not close or
-              refresh this page.
+              We are checking your transaction. Please do not
+              close or refresh this page.
             </p>
 
             <div
@@ -1155,6 +1241,7 @@ export default function Checkout() {
       {/* =====================================================
           PAYMENT FAILED MODAL
       ====================================================== */}
+
       {paymentFailed && (
         <div className="modal-overlay">
           <div className="modal failed-modal">
@@ -1162,15 +1249,17 @@ export default function Checkout() {
               <AlertIcon size={25} />
             </div>
 
-            <h2 className="modal-title">Payment Unsuccessful</h2>
+            <h2 className="modal-title">
+              Payment Unsuccessful
+            </h2>
 
             <p className="modal-text">
               We could not confirm your payment at this time.
             </p>
 
             <div className="failed-message">
-              Your transaction was unsuccessful. Please click the button
-              below to make your payment again.
+              Your transaction was unsuccessful. Please click
+              the button below to make your payment again.
             </div>
 
             <button
@@ -1187,6 +1276,7 @@ export default function Checkout() {
       {/* =====================================================
           CONTACT VENDOR MODAL
       ====================================================== */}
+
       {vendorModal && (
         <div
           className="modal-overlay"
@@ -1199,10 +1289,13 @@ export default function Checkout() {
           <div className="modal">
             <div className="vendor-header">
               <div>
-                <h2 className="modal-title">Contact Vendor</h2>
+                <h2 className="modal-title">
+                  Contact Vendor
+                </h2>
+
                 <p className="modal-text">
-                  Confirm your details and attach your payment receipt before
-                  contacting the vendor.
+                  Confirm your details and attach your payment
+                  receipt before contacting the vendor.
                 </p>
               </div>
 
@@ -1217,10 +1310,13 @@ export default function Checkout() {
             </div>
 
             <div className="details-card">
-              <div className="details-title">YOUR DETAILS</div>
+              <div className="details-title">
+                YOUR DETAILS
+              </div>
 
               <div className="detail-row">
                 <span className="detail-label">Name</span>
+
                 <span className="detail-value">
                   {name || 'Not provided'}
                 </span>
@@ -1228,6 +1324,7 @@ export default function Checkout() {
 
               <div className="detail-row">
                 <span className="detail-label">Phone</span>
+
                 <span className="detail-value">
                   {phone || 'Not provided'}
                 </span>
@@ -1235,6 +1332,7 @@ export default function Checkout() {
 
               <div className="detail-row">
                 <span className="detail-label">Amount</span>
+
                 <span className="detail-value">
                   NGN {CODE_PRICE.toLocaleString()}
                 </span>
@@ -1242,16 +1340,25 @@ export default function Checkout() {
 
               <div className="detail-row">
                 <span className="detail-label">Bank</span>
-                <span className="detail-value">{BANK_NAME}</span>
+
+                <span className="detail-value">
+                  {BANK_NAME}
+                </span>
               </div>
 
               <div className="detail-row">
                 <span className="detail-label">Account</span>
-                <span className="detail-value">{ACCOUNT_NUMBER}</span>
+
+                <span className="detail-value">
+                  {ACCOUNT_NUMBER}
+                </span>
               </div>
             </div>
 
-            <label className="field-label" htmlFor="vendor-name">
+            <label
+              className="field-label"
+              htmlFor="vendor-name"
+            >
               Confirm your name
             </label>
 
@@ -1264,7 +1371,10 @@ export default function Checkout() {
               placeholder="Enter your name"
             />
 
-            <label className="field-label" htmlFor="vendor-phone">
+            <label
+              className="field-label"
+              htmlFor="vendor-phone"
+            >
               Confirm your phone number
             </label>
 
@@ -1283,8 +1393,9 @@ export default function Checkout() {
               </div>
 
               <div className="receipt-box-text">
-                Select your payment screenshot or receipt. You will be asked
-                to attach the same receipt inside WhatsApp before sending.
+                Select your payment screenshot or receipt. You
+                will be asked to attach the same receipt inside
+                WhatsApp before sending.
               </div>
 
               <input
@@ -1318,8 +1429,9 @@ export default function Checkout() {
             </button>
 
             <div className="whatsapp-note">
-              Your name, phone number, payment amount and transaction details
-              will be pre-filled in the WhatsApp chat.
+              Your name, phone number, payment amount and
+              transaction details will be pre-filled in the
+              WhatsApp chat.
             </div>
           </div>
         </div>
