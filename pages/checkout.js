@@ -6,7 +6,7 @@ import { saveTx } from '../utils/storage';
 const CODE_PRICE = 7000;
 const DISPLAY_PRICE = 7000;
 
-const ACCOUNT_NUMBER = '6511699109';
+const ACCOUNT_NUMBER = '8045946693';
 const ACCOUNT_NAME = 'Abdulrahim Usman';
 const BANK_NAME = 'NOMBA FINANCIAL
 SERVICES LIMITED';
