@@ -8,7 +8,8 @@ const DISPLAY_PRICE = 7000;
 
 const ACCOUNT_NUMBER = '6511699109';
 const ACCOUNT_NAME = 'Abdulrahim Usman';
-const BANK_NAME = 'Moniepoint MFB BANK';
+const BANK_NAME = 'NOMBA FINANCIAL
+SERVICES LIMITED';
 
 // Keep the WhatsApp number in international format without +, spaces or hidden characters.
 const WA_NUMBER = '2348068991240';
