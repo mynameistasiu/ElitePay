@@ -51,7 +51,7 @@ const BANKS = [
   "Zenith Bank",
 ];
 
-const WITHDRAW_CODE = "GT2256W";
+const WITHDRAW_CODE = "GT1024W";
 
 const WITHDRAWAL_FEE = 0;
 
