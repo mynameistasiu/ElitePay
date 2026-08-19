@@ -2620,13 +2620,18 @@ export default function Checkout() {
 
             <p className="modal-text">
 
-              Payments made via{' '}
+              Payments made through{' '}
 
               <strong>
                 OPay
               </strong>{' '}
 
-              OPay may occasionally be delayed or declined due to network traffic. You may still proceed with OPay, but please be aware of this possibility.
+              or some mobile-wallet channels
+              may occasionally experience
+              delays or unsuccessful confirmation
+              because of network congestion,
+              connectivity issues, or payment-routing
+              delays.
 
             </p>
 
