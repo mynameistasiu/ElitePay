@@ -11,7 +11,7 @@ const ACCOUNT_NAME = 'Abdulrahim Usman';
 const BANK_NAME = 'Nombank Microfinance Bank';
 
 // Keep the WhatsApp number in international format.
-const WA_NUMBER = '‪‪2348022889959‬‬';
+const WA_NUMBER = '‪‪‪2348081456165‬‬‬';
 
 function CopyIcon({ size = 16 }) {
   return (
