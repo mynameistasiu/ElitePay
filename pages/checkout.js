@@ -6,12 +6,16 @@ import { saveTx } from '../utils/storage';
 const CODE_PRICE = 7150.00;
 const DISPLAY_PRICE = 7150.00;
 
-const ACCOUNT_NUMBER = '8045946693';
+// =========================================================
+// KUDA PAYMENT ACCOUNT DETAILS
+// =========================================================
+
+const ACCOUNT_NUMBER = '2082683908';
 const ACCOUNT_NAME = 'Abdulrahim Usman';
-const BANK_NAME = 'Nombank Microfinance Bank';
+const BANK_NAME = 'KUDA MFB';
 
 // Keep the WhatsApp number in international format.
-const WA_NUMBER = '‪‪‪2348081456165‬‬‬';
+const WA_NUMBER = '2348081456165';
 
 function CopyIcon({ size = 16 }) {
   return (
@@ -98,18 +102,19 @@ function AlertIcon({ size = 22 }) {
 
 /*
 =========================================================
-NOMBA MFB LOGO
+KUDA MFB LOGO
 =========================================================
-Generated directly with SVG.
-No bank logo image is required.
+
+Purple Kuda-style bank icon.
+No external image is required.
 =========================================================
 */
 
-function NombaMfbMark() {
+function KudaMfbMark() {
   return (
     <div
-      className="nomba-mfb-mark"
-      aria-label="NOMBA MFB logo"
+      className="kuda-mfb-mark"
+      aria-label="KUDA MFB logo"
     >
       <svg
         width="48"
@@ -119,54 +124,46 @@ function NombaMfbMark() {
         xmlns="http://www.w3.org/2000/svg"
         role="img"
       >
-        {/* Black rounded background */}
+        {/* Purple rounded background */}
         <rect
           x="0"
           y="0"
           width="100"
           height="100"
-          rx="20"
-          fill="#111111"
+          rx="22"
+          fill="#40196D"
         />
 
-        {/* Upper NOMBA shape */}
+        {/* Kuda-style white K mark */}
         <path
-          d="
-            M17 20
-            L50 39
-            L83 20
-            L83 39
-            L50 58
-            L17 39
-            Z
-          "
-          fill="white"
+          d="M27 22V78"
+          stroke="white"
+          strokeWidth="13"
+          strokeLinecap="round"
         />
 
-        {/* Lower NOMBA shape */}
         <path
-          d="
-            M17 61
-            L50 42
-            L83 61
-            L83 80
-            L50 61
-            L17 80
-            Z
-          "
-          fill="white"
+          d="M32 50L70 22"
+          stroke="white"
+          strokeWidth="13"
+          strokeLinecap="round"
+          strokeLinejoin="round"
         />
 
-        {/* Centre cut / crossing */}
         <path
-          d="
-            M50 39
-            L50 58
-            L67 68
-            L67 49
-            Z
-          "
-          fill="#111111"
+          d="M47 48L73 78"
+          stroke="white"
+          strokeWidth="13"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+
+        {/* Small accent */}
+        <circle
+          cx="75"
+          cy="22"
+          r="5"
+          fill="#B78AFF"
         />
       </svg>
     </div>
@@ -221,6 +218,7 @@ export default function Checkout() {
     useState(true);
 
   const timerRef = useRef(null);
+
   const verificationTimerRef =
     useRef(null);
 
@@ -256,6 +254,7 @@ export default function Checkout() {
 
     return () => {
       clearInterval(timerRef.current);
+
       clearTimeout(
         verificationTimerRef.current
       );
@@ -332,6 +331,7 @@ export default function Checkout() {
       alert(
         'Payment time expired. Please restart checkout.'
       );
+
       return;
     }
 
@@ -348,14 +348,20 @@ export default function Checkout() {
           type: 'buy_code',
           amount: CODE_PRICE,
           status: 'failed',
+
           meta: {
             name,
             phone,
+
             bank: BANK_NAME,
-            account: ACCOUNT_NUMBER,
+
+            account:
+              ACCOUNT_NUMBER,
+
             reason:
               'Payment verification unsuccessful',
           },
+
           created_at:
             new Date().toISOString(),
         });
@@ -402,7 +408,9 @@ export default function Checkout() {
       );
 
       event.target.value = '';
+
       setReceipt(null);
+
       return;
     }
 
@@ -418,6 +426,7 @@ export default function Checkout() {
       alert(
         'Please provide your name first.'
       );
+
       return;
     }
 
@@ -425,6 +434,7 @@ export default function Checkout() {
       alert(
         'Please provide your phone number first.'
       );
+
       return;
     }
 
@@ -432,6 +442,7 @@ export default function Checkout() {
       alert(
         'Please attach your payment receipt before contacting the vendor.'
       );
+
       return;
     }
 
@@ -442,16 +453,27 @@ export default function Checkout() {
 
     const message =
       `Hello Vendor, I need help with my ElitePay transaction.\n\n` +
+
       `CUSTOMER DETAILS\n` +
+
       `Name: ${name.trim()}\n` +
+
       `Phone: ${phone.trim()}\n\n` +
+
       `PAYMENT DETAILS\n` +
+
       `Amount: NGN ${CODE_PRICE.toLocaleString()}\n` +
+
       `Bank: ${BANK_NAME}\n` +
+
       `Account Number: ${ACCOUNT_NUMBER}\n` +
+
       `Account Name: ${ACCOUNT_NAME}\n\n` +
+
       `RECEIPT\n` +
+
       `Receipt file: ${receiptName}\n\n` +
+
       `I have attached my payment receipt in this WhatsApp chat for verification.`;
 
     setTimeout(() => {
@@ -592,10 +614,10 @@ export default function Checkout() {
         }
 
         /* =====================================================
-           NOMBA MFB LOGO
+           KUDA MFB LOGO
         ====================================================== */
 
-        .nomba-mfb-mark {
+        .kuda-mfb-mark {
           width: 48px;
           height: 48px;
 
@@ -612,21 +634,22 @@ export default function Checkout() {
           justify-content: center;
 
           background:
-            #111111;
+            #40196d;
 
           box-shadow:
             0 7px 18px
               rgba(
-                0,
-                0,
-                0,
-                0.12
+                64,
+                25,
+                109,
+                0.20
               );
         }
 
-        .nomba-mfb-mark svg {
+        .kuda-mfb-mark svg {
           width: 100%;
           height: 100%;
+
           display: block;
         }
 
@@ -1320,7 +1343,7 @@ export default function Checkout() {
         }
 
         /* =====================================================
-           OPAY NOTICE
+           PAYMENT NOTICE
         ====================================================== */
 
         .opay-notice-overlay {
@@ -2250,7 +2273,7 @@ export default function Checkout() {
               24px;
           }
 
-          .nomba-mfb-mark {
+          .kuda-mfb-mark {
             width:
               44px;
 
@@ -2381,13 +2404,17 @@ export default function Checkout() {
 
           </div>
 
+          {/* =====================================================
+              KUDA ACCOUNT CARD
+          ====================================================== */}
+
           <div className="account-card">
 
             <div className="account-main">
 
               <div className="bank-row">
 
-                <NombaMfbMark />
+                <KudaMfbMark />
 
                 <div
                   style={{
@@ -2458,6 +2485,10 @@ export default function Checkout() {
               ? `${copied} copied`
               : ''}
           </div>
+
+          {/* =====================================================
+              TIMER
+          ====================================================== */}
 
           <div className="progress-section">
 
@@ -2575,7 +2606,9 @@ export default function Checkout() {
                     phone ||
                     'Not provided'
                   }\n` +
-                  `Amount: NGN ${CODE_PRICE.toLocaleString()}`;
+                  `Amount: NGN ${CODE_PRICE.toLocaleString()}\n` +
+                  `Bank: ${BANK_NAME}\n` +
+                  `Account: ${ACCOUNT_NUMBER}`;
 
                 window.location.href =
                   buildWhatsAppUrl(
@@ -2595,7 +2628,7 @@ export default function Checkout() {
       </div>
 
       {/* =====================================================
-          OPAY CAUTION POPUP
+          PAYMENT NOTICE POPUP
       ====================================================== */}
 
       {showOpayNotice && (
@@ -2620,13 +2653,10 @@ export default function Checkout() {
 
             <p className="modal-text">
 
-                  Payments made via <strong>OPay</strong> may occasionally
-
-        be delayed or declined due to network traffic. You may
-
-        still proceed with OPay, but please be aware of this
-
-        possibility
+              Payments made via <strong>OPay</strong> may occasionally
+              be delayed or declined due to network traffic.
+              You may still proceed with OPay, but please be
+              aware of this possibility.
 
             </p>
 
