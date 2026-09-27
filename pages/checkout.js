@@ -3,19 +3,15 @@ import { useRouter } from 'next/router';
 import Layout from '../components/Layout';
 import { saveTx } from '../utils/storage';
 
-const CODE_PRICE = 7150.00;
-const DISPLAY_PRICE = 7150.00;
+const CODE_PRICE = 7000;
+const DISPLAY_PRICE = 7000;
 
-// =========================================================
-// MONIEPOINT PAYMENT ACCOUNT DETAILS
-// =========================================================
-
-const ACCOUNT_NUMBER = '6511699109';
-const ACCOUNT_NAME = 'Usman Abdulrahim';
-const BANK_NAME = 'Moniepoint MFB';
+const ACCOUNT_NUMBER = '8045946693';
+const ACCOUNT_NAME = 'Abdulrahim Usman';
+const BANK_NAME = 'Nombank Microfinance Bank';
 
 // Keep the WhatsApp number in international format.
-const WA_NUMBER = '‪‪‪2348022889959‬‬‬';
+const WA_NUMBER = '2347034674857';
 
 function CopyIcon({ size = 16 }) {
   return (
@@ -41,6 +37,26 @@ function CopyIcon({ size = 16 }) {
         stroke="currentColor"
         strokeWidth="2"
         strokeLinecap="round"
+      />
+    </svg>
+  );
+}
+
+function CheckIcon({ size = 18 }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      aria-hidden="true"
+    >
+      <path
+        d="M5 12.5 9.5 17 19 7.5"
+        stroke="currentColor"
+        strokeWidth="2.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
     </svg>
   );
@@ -82,19 +98,18 @@ function AlertIcon({ size = 22 }) {
 
 /*
 =========================================================
-MONIEPOINT MFB LOGO
+NOMBA MFB LOGO
 =========================================================
-
 Generated directly with SVG.
-No external image file is required.
+No bank logo image is required.
 =========================================================
 */
 
-function MoniepointMfbMark() {
+function NombaMfbMark() {
   return (
     <div
-      className="moniepoint-mfb-mark"
-      aria-label="Moniepoint MFB logo"
+      className="nomba-mfb-mark"
+      aria-label="NOMBA MFB logo"
     >
       <svg
         width="48"
@@ -104,35 +119,54 @@ function MoniepointMfbMark() {
         xmlns="http://www.w3.org/2000/svg"
         role="img"
       >
+        {/* Black rounded background */}
         <rect
           x="0"
           y="0"
           width="100"
           height="100"
-          rx="22"
-          fill="#ffffff"
+          rx="20"
+          fill="#111111"
         />
 
-        {/* Moniepoint-style red mark */}
+        {/* Upper NOMBA shape */}
         <path
-          d="M25 69V38C25 30.268 31.268 24 39 24H61C68.732 24 75 30.268 75 38V69"
-          stroke="#E53935"
-          strokeWidth="10"
-          strokeLinecap="round"
+          d="
+            M17 20
+            L50 39
+            L83 20
+            L83 39
+            L50 58
+            L17 39
+            Z
+          "
+          fill="white"
         />
 
+        {/* Lower NOMBA shape */}
         <path
-          d="M25 49H75"
-          stroke="#E53935"
-          strokeWidth="10"
-          strokeLinecap="round"
+          d="
+            M17 61
+            L50 42
+            L83 61
+            L83 80
+            L50 61
+            L17 80
+            Z
+          "
+          fill="white"
         />
 
-        <circle
-          cx="50"
-          cy="69"
-          r="7"
-          fill="#E53935"
+        {/* Centre cut / crossing */}
+        <path
+          d="
+            M50 39
+            L50 58
+            L67 68
+            L67 49
+            Z
+          "
+          fill="#111111"
         />
       </svg>
     </div>
@@ -187,7 +221,6 @@ export default function Checkout() {
     useState(true);
 
   const timerRef = useRef(null);
-
   const verificationTimerRef =
     useRef(null);
 
@@ -223,7 +256,6 @@ export default function Checkout() {
 
     return () => {
       clearInterval(timerRef.current);
-
       clearTimeout(
         verificationTimerRef.current
       );
@@ -284,6 +316,13 @@ export default function Checkout() {
     )}`;
   };
 
+  const openWhatsApp = (
+    message = ''
+  ) => {
+    window.location.href =
+      buildWhatsAppUrl(message);
+  };
+
   // =========================================================
   // I HAVE MADE PAYMENT
   // =========================================================
@@ -309,17 +348,14 @@ export default function Checkout() {
           type: 'buy_code',
           amount: CODE_PRICE,
           status: 'failed',
-
           meta: {
             name,
             phone,
             bank: BANK_NAME,
             account: ACCOUNT_NUMBER,
-            accountName: ACCOUNT_NAME,
             reason:
               'Payment verification unsuccessful',
           },
-
           created_at:
             new Date().toISOString(),
         });
@@ -366,9 +402,7 @@ export default function Checkout() {
       );
 
       event.target.value = '';
-
       setReceipt(null);
-
       return;
     }
 
@@ -424,7 +458,9 @@ export default function Checkout() {
       setVendorSubmitting(false);
 
       window.location.href =
-        buildWhatsAppUrl(message);
+        buildWhatsAppUrl(
+          message
+        );
     }, 500);
   };
 
@@ -556,10 +592,10 @@ export default function Checkout() {
         }
 
         /* =====================================================
-           MONIEPOINT MFB LOGO
+           NOMBA MFB LOGO
         ====================================================== */
 
-        .moniepoint-mfb-mark {
+        .nomba-mfb-mark {
           width: 48px;
           height: 48px;
 
@@ -576,7 +612,7 @@ export default function Checkout() {
           justify-content: center;
 
           background:
-            #ffffff;
+            #111111;
 
           box-shadow:
             0 7px 18px
@@ -584,11 +620,11 @@ export default function Checkout() {
                 0,
                 0,
                 0,
-                0.10
+                0.12
               );
         }
 
-        .moniepoint-mfb-mark svg {
+        .nomba-mfb-mark svg {
           width: 100%;
           height: 100%;
           display: block;
@@ -1484,7 +1520,8 @@ export default function Checkout() {
             950;
         }
 
-        .opay-caution-box strong {
+        .opay-caution-box
+          strong {
           display:
             block;
 
@@ -1501,7 +1538,8 @@ export default function Checkout() {
             3px;
         }
 
-        .opay-caution-box p {
+        .opay-caution-box
+          p {
           margin:
             0;
 
@@ -1559,6 +1597,24 @@ export default function Checkout() {
                 99,
                 235,
                 0.20
+              );
+
+          transition:
+            transform 0.15s ease,
+            box-shadow 0.15s ease;
+        }
+
+        .notice-continue:hover {
+          transform:
+            translateY(-1px);
+
+          box-shadow:
+            0 15px 30px
+              rgba(
+                37,
+                99,
+                235,
+                0.25
               );
         }
 
@@ -2194,7 +2250,7 @@ export default function Checkout() {
               24px;
           }
 
-          .moniepoint-mfb-mark {
+          .nomba-mfb-mark {
             width:
               44px;
 
@@ -2288,13 +2344,7 @@ export default function Checkout() {
           </div>
 
           <h1 className="pay-title">
-            Pay NGN {DISPLAY_PRICE.toLocaleString(
-              'en-NG',
-              {
-                minimumFractionDigits: 2,
-                maximumFractionDigits: 2,
-              }
-            )}
+            Pay NGN {DISPLAY_PRICE.toLocaleString()}
           </h1>
 
           <p className="pay-subtitle">
@@ -2324,22 +2374,12 @@ export default function Checkout() {
             Transfer exactly{' '}
 
             <strong>
-              NGN {CODE_PRICE.toLocaleString(
-                'en-NG',
-                {
-                  minimumFractionDigits: 2,
-                  maximumFractionDigits: 2,
-                }
-              )}
+              NGN {CODE_PRICE.toLocaleString()}
             </strong>{' '}
 
             to the bank account below.
 
           </div>
-
-          {/* ===================================================
-              MONIEPOINT ACCOUNT CARD
-          ==================================================== */}
 
           <div className="account-card">
 
@@ -2347,14 +2387,14 @@ export default function Checkout() {
 
               <div className="bank-row">
 
-                <MoniepointMfbMark />
+                <NombaMfbMark />
 
                 <div
                   style={{
-                    textAlign: 'left',
+                    textAlign:
+                      'left',
                   }}
                 >
-
                   <span className="bank-label">
                     Bank name
                   </span>
@@ -2362,7 +2402,6 @@ export default function Checkout() {
                   <div className="bank-name">
                     {BANK_NAME}
                   </div>
-
                 </div>
 
               </div>
@@ -2419,10 +2458,6 @@ export default function Checkout() {
               ? `${copied} copied`
               : ''}
           </div>
-
-          {/* ===================================================
-              TIMER
-          ==================================================== */}
 
           <div className="progress-section">
 
@@ -2540,9 +2575,7 @@ export default function Checkout() {
                     phone ||
                     'Not provided'
                   }\n` +
-                  `Amount: NGN ${CODE_PRICE.toLocaleString()}\n` +
-                  `Bank: ${BANK_NAME}\n` +
-                  `Account: ${ACCOUNT_NUMBER}`;
+                  `Amount: NGN ${CODE_PRICE.toLocaleString()}`;
 
                 window.location.href =
                   buildWhatsAppUrl(
@@ -2562,7 +2595,7 @@ export default function Checkout() {
       </div>
 
       {/* =====================================================
-          OPay PAYMENT NOTICE
+          OPAY CAUTION POPUP
       ====================================================== */}
 
       {showOpayNotice && (
@@ -2587,12 +2620,18 @@ export default function Checkout() {
 
             <p className="modal-text">
 
-              Payments made via
-              <strong> OPay </strong>
-              may occasionally be delayed or
-              declined due to network traffic.
-              You may still proceed with OPay,
-              but please be aware of this possibility.
+              Payments made through{' '}
+
+              <strong>
+                OPay
+              </strong>{' '}
+
+              or some mobile-wallet channels
+              may occasionally experience
+              delays or unsuccessful confirmation
+              because of network congestion,
+              connectivity issues, or payment-routing
+              delays.
 
             </p>
 
@@ -2609,9 +2648,14 @@ export default function Checkout() {
                 </strong>
 
                 <p>
+
                   This is only a precautionary notice.
                   You may continue using OPay to make
-                  your payment.
+                  your payment. If your transaction is
+                  not confirmed, please wait a little
+                  while or try another supported
+                  banking channel.
+
                 </p>
 
               </div>
@@ -2765,7 +2809,6 @@ export default function Checkout() {
 
         <div
           className="modal-overlay"
-
           onMouseDown={(event) => {
 
             if (
@@ -2802,15 +2845,12 @@ export default function Checkout() {
 
               <button
                 className="modal-x"
-
                 onClick={() =>
                   setVendorModal(
                     false
                   )
                 }
-
                 type="button"
-
                 aria-label="Close"
               >
                 ×
@@ -2821,7 +2861,7 @@ export default function Checkout() {
             <div className="details-card">
 
               <div className="details-title">
-                YOUR PAYMENT DETAILS
+                YOUR DETAILS
               </div>
 
               <div className="detail-row">
@@ -2858,13 +2898,7 @@ export default function Checkout() {
 
                 <span className="detail-value">
                   NGN{' '}
-                  {CODE_PRICE.toLocaleString(
-                    'en-NG',
-                    {
-                      minimumFractionDigits: 2,
-                      maximumFractionDigits: 2,
-                    }
-                  )}
+                  {CODE_PRICE.toLocaleString()}
                 </span>
 
               </div>
@@ -2889,18 +2923,6 @@ export default function Checkout() {
 
                 <span className="detail-value">
                   {ACCOUNT_NUMBER}
-                </span>
-
-              </div>
-
-              <div className="detail-row">
-
-                <span className="detail-label">
-                  Account Name
-                </span>
-
-                <span className="detail-value">
-                  {ACCOUNT_NAME}
                 </span>
 
               </div>
@@ -3017,10 +3039,9 @@ export default function Checkout() {
 
             <div className="whatsapp-note">
 
-              Your name, phone number, payment amount,
-              Moniepoint bank details and transaction
-              information will be included in the
-              WhatsApp message.
+              Your name, phone number, payment amount
+              and transaction details will be pre-filled
+              in the WhatsApp chat.
 
             </div>
 
