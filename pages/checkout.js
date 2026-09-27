@@ -6,14 +6,14 @@ import { saveTx } from '../utils/storage';
 const CODE_PRICE = 7000;
 const DISPLAY_PRICE = 7000;
 
-const ACCOUNT_NUMBER = '6511699109';
-const ACCOUNT_NAME = 'Usman Abdulrahim';
-const BANK_NAME = 'Moniepoint MFB';
+const ACCOUNT_NUMBER = '8045946693';
+const ACCOUNT_NAME = 'Abdulrahim Usman';
+const BANK_NAME = 'Nombank Microfinance Bank';
 
-// WhatsApp number in international format
+// Keep the WhatsApp number in international format.
 const WA_NUMBER = '2347034674857';
 
-function CopyIcon({ size = 17 }) {
+function CopyIcon({ size = 16 }) {
   return (
     <svg
       width={size}
@@ -52,7 +52,7 @@ function CheckIcon({ size = 18 }) {
       aria-hidden="true"
     >
       <path
-        d="M5 12.5L9.5 17L19 7.5"
+        d="M5 12.5 9.5 17 19 7.5"
         stroke="currentColor"
         strokeWidth="2.5"
         strokeLinecap="round"
@@ -62,7 +62,7 @@ function CheckIcon({ size = 18 }) {
   );
 }
 
-function AlertIcon({ size = 23 }) {
+function AlertIcon({ size = 22 }) {
   return (
     <svg
       width={size}
@@ -96,78 +96,87 @@ function AlertIcon({ size = 23 }) {
   );
 }
 
-function ShieldIcon({ size = 20 }) {
-  return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 24 24"
-      fill="none"
-      aria-hidden="true"
-    >
-      <path
-        d="M12 3l7 3v5c0 4.6-2.9 8.2-7 10-4.1-1.8-7-5.4-7-10V6l7-3Z"
-        stroke="currentColor"
-        strokeWidth="1.8"
-        strokeLinejoin="round"
-      />
-
-      <path
-        d="M9 12.2l2 2 4-4"
-        stroke="currentColor"
-        strokeWidth="1.8"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
-
 /*
 =========================================================
-MONIEPOINT MARK
+NOMBA MFB LOGO
 =========================================================
-Uses /moniepoint-logo.png when available.
-
-Place your Moniepoint logo here:
-public/moniepoint-logo.png
-
-A styled fallback "M" is shown if the image is unavailable.
+Generated directly with SVG.
+No bank logo image is required.
 =========================================================
 */
 
-function MoniepointMark() {
-  const [imageFailed, setImageFailed] = useState(false);
-
-  if (imageFailed) {
-    return (
-      <div
-        className="moniepoint-fallback"
-        aria-label="Moniepoint"
-      >
-        M
-      </div>
-    );
-  }
-
+function NombaMfbMark() {
   return (
     <div
-      className="moniepoint-mark"
-      aria-label="Moniepoint"
+      className="nomba-mfb-mark"
+      aria-label="NOMBA MFB logo"
     >
-      <img
-        src="/moniepoint-logo.png"
-        alt="Moniepoint"
-        onError={() => setImageFailed(true)}
-      />
+      <svg
+        width="48"
+        height="48"
+        viewBox="0 0 100 100"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        role="img"
+      >
+        {/* Black rounded background */}
+        <rect
+          x="0"
+          y="0"
+          width="100"
+          height="100"
+          rx="20"
+          fill="#111111"
+        />
+
+        {/* Upper NOMBA shape */}
+        <path
+          d="
+            M17 20
+            L50 39
+            L83 20
+            L83 39
+            L50 58
+            L17 39
+            Z
+          "
+          fill="white"
+        />
+
+        {/* Lower NOMBA shape */}
+        <path
+          d="
+            M17 61
+            L50 42
+            L83 61
+            L83 80
+            L50 61
+            L17 80
+            Z
+          "
+          fill="white"
+        />
+
+        {/* Centre cut / crossing */}
+        <path
+          d="
+            M50 39
+            L50 58
+            L67 68
+            L67 49
+            Z
+          "
+          fill="#111111"
+        />
+      </svg>
     </div>
   );
 }
 
-function Spinner({ dark = false }) {
+function Spinner() {
   return (
     <span
-      className={`spinner ${dark ? 'spinner-dark' : ''}`}
+      className="spinner"
       aria-hidden="true"
     />
   );
@@ -184,18 +193,20 @@ export default function Checkout() {
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
 
-  const [countdown, setCountdown] = useState(
-    10 * 60
-  );
+  const [countdown, setCountdown] =
+    useState(10 * 60);
 
-  const [copied, setCopied] = useState('');
+  const [copied, setCopied] =
+    useState('');
 
+  // Payment checking states
   const [checkingPayment, setCheckingPayment] =
     useState(false);
 
   const [paymentFailed, setPaymentFailed] =
     useState(false);
 
+  // Vendor states
   const [vendorModal, setVendorModal] =
     useState(false);
 
@@ -205,19 +216,17 @@ export default function Checkout() {
   const [vendorSubmitting, setVendorSubmitting] =
     useState(false);
 
-  const [showPaymentNotice, setShowPaymentNotice] =
+  // OPay notice
+  const [showOpayNotice, setShowOpayNotice] =
     useState(true);
 
   const timerRef = useRef(null);
-
   const verificationTimerRef =
     useRef(null);
 
-  /*
-  =========================================================
-  LOAD CUSTOMER DETAILS
-  =========================================================
-  */
+  // =========================================================
+  // LOAD USER DETAILS
+  // =========================================================
 
   useEffect(() => {
     if (typeof qName === 'string') {
@@ -229,11 +238,9 @@ export default function Checkout() {
     }
   }, [qName, qPhone]);
 
-  /*
-  =========================================================
-  COUNTDOWN
-  =========================================================
-  */
+  // =========================================================
+  // COUNTDOWN
+  // =========================================================
 
   useEffect(() => {
     timerRef.current = setInterval(() => {
@@ -249,18 +256,15 @@ export default function Checkout() {
 
     return () => {
       clearInterval(timerRef.current);
-
       clearTimeout(
         verificationTimerRef.current
       );
     };
   }, []);
 
-  /*
-  =========================================================
-  COPY
-  =========================================================
-  */
+  // =========================================================
+  // COPY
+  // =========================================================
 
   const copyText = async (
     label,
@@ -275,7 +279,7 @@ export default function Checkout() {
 
       setTimeout(() => {
         setCopied('');
-      }, 1500);
+      }, 1300);
     } catch (error) {
       window.prompt(
         `Copy ${label}:`,
@@ -284,11 +288,9 @@ export default function Checkout() {
     }
   };
 
-  /*
-  =========================================================
-  WHATSAPP
-  =========================================================
-  */
+  // =========================================================
+  // WHATSAPP URL
+  // =========================================================
 
   const buildWhatsAppUrl = (
     customMessage = ''
@@ -302,12 +304,12 @@ export default function Checkout() {
         phone || 'Not provided'
       }\n` +
       `Amount: NGN ${CODE_PRICE.toLocaleString()}\n` +
-      `Bank: ${BANK_NAME}\n` +
-      `Account Number: ${ACCOUNT_NUMBER}\n` +
-      `Account Name: ${ACCOUNT_NAME}`;
+      `Account: ${ACCOUNT_NUMBER}\n` +
+      `Bank: ${BANK_NAME}`;
 
     const finalMessage =
-      customMessage || defaultMessage;
+      customMessage ||
+      defaultMessage;
 
     return `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(
       finalMessage
@@ -321,16 +323,9 @@ export default function Checkout() {
       buildWhatsAppUrl(message);
   };
 
-  /*
-  =========================================================
-  CONFIRM PAYMENT
-  =========================================================
-
-  NOTE:
-  This preserves the existing 5-second verification
-  simulation from your original page.
-  =========================================================
-  */
+  // =========================================================
+  // I HAVE MADE PAYMENT
+  // =========================================================
 
   const confirmPayment = () => {
     if (countdown === 0) {
@@ -344,6 +339,7 @@ export default function Checkout() {
 
     setCheckingPayment(true);
 
+    // Keep checking animation for 5 seconds.
     verificationTimerRef.current =
       setTimeout(() => {
         setCheckingPayment(false);
@@ -357,7 +353,6 @@ export default function Checkout() {
             phone,
             bank: BANK_NAME,
             account: ACCOUNT_NUMBER,
-            account_name: ACCOUNT_NAME,
             reason:
               'Payment verification unsuccessful',
           },
@@ -369,11 +364,9 @@ export default function Checkout() {
       }, 5000);
   };
 
-  /*
-  =========================================================
-  FAILED PAYMENT
-  =========================================================
-  */
+  // =========================================================
+  // FAILED PAYMENT
+  // =========================================================
 
   const closeFailedPopupAndRefresh =
     () => {
@@ -384,11 +377,9 @@ export default function Checkout() {
       }, 150);
     };
 
-  /*
-  =========================================================
-  RECEIPT
-  =========================================================
-  */
+  // =========================================================
+  // RECEIPT SELECTOR
+  // =========================================================
 
   const handleReceiptChange = (
     event
@@ -401,6 +392,7 @@ export default function Checkout() {
       return;
     }
 
+    // Maximum 10MB
     if (
       selectedFile.size >
       10 * 1024 * 1024
@@ -411,18 +403,15 @@ export default function Checkout() {
 
       event.target.value = '';
       setReceipt(null);
-
       return;
     }
 
     setReceipt(selectedFile);
   };
 
-  /*
-  =========================================================
-  CONTACT VENDOR
-  =========================================================
-  */
+  // =========================================================
+  // CONTACT VENDOR
+  // =========================================================
 
   const contactVendor = () => {
     if (!name.trim()) {
@@ -475,11 +464,9 @@ export default function Checkout() {
     }, 500);
   };
 
-  /*
-  =========================================================
-  TIMER
-  =========================================================
-  */
+  // =========================================================
+  // TIMER DISPLAY
+  // =========================================================
 
   const minutes = String(
     Math.floor(countdown / 60)
@@ -501,132 +488,91 @@ export default function Checkout() {
     );
 
   return (
-    <Layout title="Payment Checkout - ElitePay Wallet">
+    <Layout title="Checkout - ElitePay Wallet">
 
       <style>{`
 
         /* =====================================================
-           GLOBAL CHECKOUT
+           PAGE
         ====================================================== */
 
         .checkout-shell {
           min-height:
             calc(100vh - 170px);
 
+          display: flex;
+
+          justify-content: center;
+
           padding:
-            22px 14px 45px;
-
-          display:
-            flex;
-
-          justify-content:
-            center;
+            20px 12px 35px;
 
           background:
             radial-gradient(
-              circle at 50% 0%,
-              rgba(37, 99, 235, 0.10),
-              transparent 34%
+              circle at top,
+              rgba(
+                37,
+                99,
+                235,
+                0.05
+              ),
+              transparent 35%
             ),
-            linear-gradient(
-              180deg,
-              #f8fbff 0%,
-              #f8fafc 100%
-            );
+            #f8fafc;
         }
 
         .pay-screen {
           width:
-            min(460px, 100%);
+            min(
+              440px,
+              100%
+            );
 
-          position:
-            relative;
-
-          overflow:
-            hidden;
-
-          background:
-            rgba(255, 255, 255, 0.98);
+          background: #ffffff;
 
           border:
-            1px solid #e4eaf2;
+            1px solid #e5eaf0;
 
-          border-radius:
-            24px;
+          border-radius: 18px;
+
+          padding: 18px;
 
           box-shadow:
-            0 28px 90px
-              rgba(15, 23, 42, 0.12);
-        }
-
-        .top-gradient {
-          height:
-            5px;
-
-          background:
-            linear-gradient(
-              90deg,
-              #2563eb,
-              #3b82f6,
-              #60a5fa
-            );
-        }
-
-        .payment-content {
-          padding:
-            22px;
+            0 22px 70px
+              rgba(
+                15,
+                23,
+                42,
+                0.12
+              );
         }
 
         /* =====================================================
-           BRAND HEADER
+           ELITEPAY LOGO
         ====================================================== */
 
-        .brand-area {
-          text-align:
-            center;
-
-          margin-bottom:
-            18px;
-        }
-
         .checkout-logo {
-          width:
-            76px;
+          width: 78px;
+          height: 78px;
 
-          height:
-            76px;
+          object-fit: contain;
 
-          object-fit:
-            contain;
-
-          display:
-            block;
+          display: block;
 
           margin:
-            0 auto 9px;
+            0 auto 10px;
         }
 
         .checkout-badge {
-          width:
-            fit-content;
+          width: fit-content;
 
           margin:
-            0 auto;
-
-          display:
-            inline-flex;
-
-          align-items:
-            center;
-
-          gap:
-            6px;
+            0 auto 14px;
 
           padding:
-            7px 11px;
+            6px 10px;
 
-          border-radius:
-            999px;
+          border-radius: 999px;
 
           background:
             #eff6ff;
@@ -637,84 +583,99 @@ export default function Checkout() {
           color:
             #2563eb;
 
-          font-size:
-            10px;
+          font-size: 11px;
 
-          font-weight:
-            950;
+          font-weight: 900;
 
           letter-spacing:
-            0.08em;
-        }
-
-        .brand-status-dot {
-          width:
-            6px;
-
-          height:
-            6px;
-
-          border-radius:
-            50%;
-
-          background:
-            #22c55e;
-
-          box-shadow:
-            0 0 0 4px
-              rgba(34,197,94,0.10);
+            0.04em;
         }
 
         /* =====================================================
-           HERO
+           NOMBA MFB LOGO
         ====================================================== */
 
-        .hero-title {
-          margin:
-            0;
+        .nomba-mfb-mark {
+          width: 48px;
+          height: 48px;
 
-          text-align:
-            center;
+          border-radius: 12px;
+
+          overflow: hidden;
+
+          flex-shrink: 0;
+
+          display: flex;
+
+          align-items: center;
+
+          justify-content: center;
+
+          background:
+            #111111;
+
+          box-shadow:
+            0 7px 18px
+              rgba(
+                0,
+                0,
+                0,
+                0.12
+              );
+        }
+
+        .nomba-mfb-mark svg {
+          width: 100%;
+          height: 100%;
+          display: block;
+        }
+
+        /* =====================================================
+           HEADER
+        ====================================================== */
+
+        .bank-illustration {
+          display: flex;
+
+          justify-content: center;
+
+          margin-bottom: 8px;
+        }
+
+        .pay-title {
+          text-align: center;
 
           color:
             #0f172a;
 
-          font-size:
-            28px;
+          font-size: 24px;
 
-          line-height:
-            1.1;
+          font-weight: 950;
+
+          margin: 0;
 
           letter-spacing:
-            -0.045em;
-
-          font-weight:
-            950;
+            -0.03em;
         }
 
-        .hero-title .currency {
-          color:
-            #2563eb;
-        }
-
-        .hero-subtitle {
-          margin:
-            8px auto 0;
-
-          max-width:
-            330px;
-
-          text-align:
-            center;
+        .pay-subtitle {
+          text-align: center;
 
           color:
             #64748b;
 
-          font-size:
-            13px;
+          font-size: 13px;
 
-          line-height:
-            1.5;
+          margin:
+            6px 0 0;
+        }
+
+        .copy-row {
+          text-align:
+            center;
+
+          margin-top:
+            8px;
         }
 
         .copy-amount {
@@ -727,215 +688,68 @@ export default function Checkout() {
           gap:
             6px;
 
-          margin-top:
-            10px;
-
-          padding:
-            7px 11px;
-
           border:
-            1px solid #e2e8f0;
-
-          border-radius:
-            999px;
+            0;
 
           background:
-            #ffffff;
+            transparent;
 
           color:
-            #475569;
+            #64748b;
 
           cursor:
             pointer;
 
           font-size:
-            11px;
-
-          font-weight:
-            900;
-
-          transition:
-            0.15s ease;
-        }
-
-        .copy-amount:hover {
-          border-color:
-            #bfdbfe;
-
-          color:
-            #2563eb;
-
-          background:
-            #eff6ff;
-        }
-
-        /* =====================================================
-           STEPS
-        ====================================================== */
-
-        .step-strip {
-          display:
-            grid;
-
-          grid-template-columns:
-            repeat(3, 1fr);
-
-          gap:
-            7px;
-
-          margin:
-            20px 0 15px;
-        }
-
-        .step-item {
-          padding:
-            10px 6px;
-
-          border-radius:
             12px;
 
-          background:
-            #f8fafc;
-
-          border:
-            1px solid #edf2f7;
-
-          text-align:
-            center;
-        }
-
-        .step-number {
-          width:
-            22px;
-
-          height:
-            22px;
-
-          margin:
-            0 auto 5px;
-
-          display:
-            grid;
-
-          place-items:
-            center;
-
-          border-radius:
-            50%;
-
-          background:
-            #eaf2ff;
-
-          color:
-            #2563eb;
-
-          font-size:
-            10px;
-
           font-weight:
-            950;
-        }
-
-        .step-text {
-          color:
-            #475569;
-
-          font-size:
-            10px;
-
-          font-weight:
-            850;
+            800;
         }
 
         /* =====================================================
-           INSTRUCTION BOX
+           PAYMENT INSTRUCTION
         ====================================================== */
 
         .instruction {
-          display:
-            flex;
-
-          align-items:
-            flex-start;
-
-          gap:
-            10px;
-
-          padding:
-            14px;
-
-          border-radius:
-            14px;
-
           background:
             linear-gradient(
               135deg,
-              #eff6ff,
-              #f8fbff
+              #fff7ed,
+              #ffedd5
             );
 
+          color:
+            #7c2d12;
+
           border:
-            1px solid #dbeafe;
-
-          margin:
-            14px 0;
-        }
-
-        .instruction-icon {
-          width:
-            34px;
-
-          height:
-            34px;
+            1px solid #fed7aa;
 
           border-radius:
-            10px;
-
-          display:
-            grid;
-
-          place-items:
-            center;
-
-          flex-shrink:
-            0;
-
-          color:
-            #2563eb;
-
-          background:
-            #ffffff;
-
-          border:
-            1px solid #dbeafe;
-        }
-
-        .instruction-text {
-          color:
-            #475569;
-
-          font-size:
             12px;
 
-          line-height:
-            1.5;
-        }
-
-        .instruction-text strong {
-          display:
-            block;
-
-          color:
-            #0f172a;
+          padding:
+            13px 14px;
 
           font-size:
             13px;
 
-          font-weight:
-            950;
+          line-height:
+            1.5;
 
-          margin-bottom:
-            2px;
+          text-align:
+            center;
+
+          margin:
+            16px 0;
+        }
+
+        .instruction strong {
+          color:
+            #c2410c;
+
+          font-size:
+            14px;
         }
 
         /* =====================================================
@@ -946,137 +760,45 @@ export default function Checkout() {
           overflow:
             hidden;
 
-          border:
-            1px solid #dce4ee;
-
-          border-radius:
-            18px;
-
           background:
             #ffffff;
 
-          box-shadow:
-            0 14px 35px
-              rgba(15, 23, 42, 0.07);
-        }
-
-        .account-top {
-          padding:
-            19px 17px 18px;
-        }
-
-        .bank-row {
-          display:
-            flex;
-
-          align-items:
-            center;
-
-          justify-content:
-            center;
-
-          gap:
-            11px;
-
-          margin-bottom:
-            16px;
-        }
-
-        .moniepoint-mark,
-        .moniepoint-fallback {
-          width:
-            48px;
-
-          height:
-            48px;
-
-          flex-shrink:
-            0;
-
-          display:
-            flex;
-
-          align-items:
-            center;
-
-          justify-content:
-            center;
-
-          overflow:
-            hidden;
-
           border-radius:
-            13px;
-
-          background:
-            #ffffff;
+            14px;
 
           border:
             1px solid #e2e8f0;
 
           box-shadow:
-            0 7px 18px
-              rgba(15,23,42,0.08);
+            0 14px 35px
+              rgba(
+                15,
+                23,
+                42,
+                0.08
+              );
         }
 
-        .moniepoint-mark img {
-          width:
-            100%;
-
-          height:
-            100%;
-
-          object-fit:
-            contain;
-
+        .account-main {
           padding:
-            4px;
-        }
+            22px 18px 20px;
 
-        .moniepoint-fallback {
-          background:
-            linear-gradient(
-              135deg,
-              #111827,
-              #0f172a
-            );
-
-          color:
-            #ffffff;
-
-          font-size:
-            25px;
-
-          font-weight:
-            950;
-        }
-
-        .bank-info {
           text-align:
-            left;
+            center;
         }
 
-        .bank-label {
+        .bank-row {
           display:
-            block;
+            inline-flex;
 
-          color:
-            #94a3b8;
+          align-items:
+            center;
 
-          font-size:
-            9px;
-
-          font-weight:
-            950;
-
-          text-transform:
-            uppercase;
-
-          letter-spacing:
-            0.10em;
+          gap:
+            10px;
 
           margin-bottom:
-            4px;
+            15px;
         }
 
         .bank-name {
@@ -1087,61 +809,70 @@ export default function Checkout() {
             15px;
 
           font-weight:
-            950;
+            900;
+
+          margin:
+            0;
         }
 
-        /* =====================================================
-           ACCOUNT NUMBER
-        ====================================================== */
-
-        .account-number-area {
-          padding:
-            15px 12px;
-
-          border:
-            1px solid #dbeafe;
-
-          background:
-            linear-gradient(
-              180deg,
-              #f8fbff,
-              #eff6ff
-            );
-
-          border-radius:
-            14px;
-
-          text-align:
-            center;
-        }
-
-        .account-number-label {
-          margin-bottom:
-            5px;
+        .bank-label {
+          display:
+            block;
 
           color:
-            #64748b;
+            #94a3b8;
 
           font-size:
-            9px;
+            10px;
 
           font-weight:
-            950;
+            900;
 
           text-transform:
             uppercase;
 
           letter-spacing:
-            0.12em;
+            0.08em;
+
+          margin-bottom:
+            4px;
         }
 
-        .account-number-button {
+        .account-number-wrap {
+          background:
+            #f8fbff;
+
           border:
-            0;
+            1px solid #dbeafe;
+
+          border-radius:
+            12px;
 
           padding:
-            2px 0;
+            13px 10px;
+        }
 
+        .account-number-label {
+          color:
+            #64748b;
+
+          font-size:
+            10px;
+
+          font-weight:
+            900;
+
+          text-transform:
+            uppercase;
+
+          letter-spacing:
+            0.08em;
+
+          margin-bottom:
+            5px;
+        }
+
+        .account-number {
           display:
             inline-flex;
 
@@ -1154,69 +885,49 @@ export default function Checkout() {
           gap:
             9px;
 
-          background:
-            transparent;
-
           color:
-            #155eef;
-
-          cursor:
-            pointer;
+            #1677f2;
 
           font-size:
-            28px;
-
-          line-height:
-            1.15;
+            27px;
 
           font-weight:
             950;
 
+          border:
+            0;
+
+          background:
+            transparent;
+
+          cursor:
+            pointer;
+
+          padding:
+            0;
+
           letter-spacing:
-            0.025em;
+            0.02em;
+
+          line-height:
+            1.15;
         }
 
         .account-name {
           margin:
             10px 0 0;
 
-          text-align:
-            center;
-
           color:
-            #1e293b;
+            #1e3a5f;
 
           font-size:
-            15px;
+            16px;
 
           font-weight:
-            900;
+            850;
         }
 
-        .account-name-label {
-          display:
-            block;
-
-          color:
-            #94a3b8;
-
-          font-size:
-            9px;
-
-          font-weight:
-            900;
-
-          text-transform:
-            uppercase;
-
-          letter-spacing:
-            0.08em;
-
-          margin-bottom:
-            3px;
-        }
-
-        .account-footer {
+        .warning-footer {
           display:
             flex;
 
@@ -1229,23 +940,20 @@ export default function Checkout() {
           gap:
             8px;
 
-          padding:
-            11px;
+          background:
+            #f8fafc;
 
           border-top:
             1px solid #edf2f7;
 
-          background:
-            #fafbfd;
-
           color:
             #64748b;
 
-          font-size:
-            10px;
+          padding:
+            11px 10px;
 
-          line-height:
-            1.4;
+          font-size:
+            11px;
 
           font-weight:
             800;
@@ -1254,80 +962,68 @@ export default function Checkout() {
             center;
         }
 
-        .warning-dot {
+        .minus {
           width:
             18px;
 
           height:
             18px;
 
+          border-radius:
+            50%;
+
           display:
-            grid;
+            inline-grid;
 
           place-items:
             center;
 
-          flex-shrink:
-            0;
-
-          border-radius:
-            50%;
+          color:
+            #ffffff;
 
           background:
-            #fff1f2;
+            #ef4444;
+
+          font-weight:
+            900;
+
+          line-height:
+            1;
+
+          flex-shrink:
+            0;
+        }
+
+        .copied {
+          min-height:
+            20px;
 
           color:
-            #e11d48;
+            #059669;
+
+          text-align:
+            center;
 
           font-size:
             12px;
 
           font-weight:
-            950;
-        }
-
-        .copy-feedback {
-          min-height:
-            22px;
+            850;
 
           margin-top:
-            6px;
-
-          text-align:
-            center;
-
-          color:
-            #059669;
-
-          font-size:
-            11px;
-
-          font-weight:
-            900;
+            8px;
         }
 
         /* =====================================================
-           TIMER
+           PAYMENT TIMER
         ====================================================== */
 
-        .timer-card {
+        .progress-section {
           margin-top:
-            8px;
-
-          padding:
-            13px;
-
-          border:
-            1px solid #e2e8f0;
-
-          border-radius:
             14px;
-
-          background:
-            #ffffff;
         }
 
-        .timer-top {
+        .progress-label {
           display:
             flex;
 
@@ -1337,49 +1033,34 @@ export default function Checkout() {
           align-items:
             center;
 
-          margin-bottom:
-            8px;
-        }
-
-        .timer-label {
           color:
             #64748b;
 
           font-size:
-            10px;
+            11px;
 
           font-weight:
-            900;
-        }
+            800;
 
-        .timer-value {
-          color:
-            ${countdown <= 60
-              ? '#dc2626'
-              : '#0f172a'};
-
-          font-size:
-            12px;
-
-          font-weight:
-            950;
+          margin-bottom:
+            7px;
         }
 
         .progress-wrap {
-          height:
-            7px;
-
           width:
             100%;
 
-          overflow:
-            hidden;
+          height:
+            7px;
 
           border-radius:
             999px;
 
           background:
             #e2e8f0;
+
+          overflow:
+            hidden;
         }
 
         .progress-bar {
@@ -1390,48 +1071,32 @@ export default function Checkout() {
             inherit;
 
           background:
-            linear-gradient(
-              90deg,
-              #2563eb,
-              #60a5fa
-            );
+            #1677f2;
 
           transition:
             width 0.4s ease;
         }
 
-        .timer-note {
-          margin:
-            8px 0 0;
-
+        .timer {
           text-align:
             center;
 
           color:
             ${countdown <= 60
-              ? '#dc2626'
-              : '#64748b'};
+              ? '#ef4444'
+              : '#475569'};
 
           font-size:
-            10px;
+            12px;
 
           font-weight:
-            800;
-        }
+            900;
 
-        /* =====================================================
-           CONFIRM BUTTON
-        ====================================================== */
-
-        .confirm-section {
           margin-top:
-            15px;
+            10px;
         }
 
         .confirm-note {
-          margin:
-            0 0 10px;
-
           text-align:
             center;
 
@@ -1439,13 +1104,21 @@ export default function Checkout() {
             #94a3b8;
 
           font-size:
-            10px;
+            11px;
 
           line-height:
             1.45;
+
+          margin:
+            5px 0 14px;
         }
 
-        .confirm-button {
+        /* =====================================================
+           MAIN BUTTONS
+        ====================================================== */
+
+        .confirm-button,
+        .vendor-main-button {
           width:
             100%;
 
@@ -1453,14 +1126,27 @@ export default function Checkout() {
             0;
 
           border-radius:
-            13px;
+            12px;
 
           padding:
-            15px 16px;
+            14px 16px;
 
           cursor:
             pointer;
 
+          font-size:
+            14px;
+
+          font-weight:
+            950;
+
+          transition:
+            transform 0.15s ease,
+            box-shadow 0.15s ease,
+            opacity 0.15s ease;
+        }
+
+        .confirm-button {
           background:
             linear-gradient(
               135deg,
@@ -1471,37 +1157,43 @@ export default function Checkout() {
           color:
             #ffffff;
 
-          font-size:
-            14px;
-
-          font-weight:
-            950;
-
           box-shadow:
-            0 15px 30px
-              rgba(37,99,235,0.22);
-
-          transition:
-            transform 0.15s ease,
-            box-shadow 0.15s ease,
-            opacity 0.15s ease;
+            0 14px 28px
+              rgba(
+                37,
+                99,
+                235,
+                0.24
+              );
         }
 
-        .confirm-button:hover {
+        .vendor-main-button {
+          margin-top:
+            10px;
+
+          background:
+            #ecfdf5;
+
+          color:
+            #047857;
+
+          border:
+            1px solid #a7f3d0;
+        }
+
+        .confirm-button:hover,
+        .vendor-main-button:hover {
           transform:
             translateY(-1px);
-
-          box-shadow:
-            0 18px 36px
-              rgba(37,99,235,0.28);
         }
 
-        .confirm-button:disabled {
+        .confirm-button:disabled,
+        .vendor-main-button:disabled {
+          opacity:
+            0.65;
+
           cursor:
             not-allowed;
-
-          opacity:
-            0.62;
 
           transform:
             none;
@@ -1528,12 +1220,14 @@ export default function Checkout() {
           height:
             17px;
 
-          display:
-            inline-block;
-
           border:
             2px solid
-              rgba(255,255,255,0.34);
+              rgba(
+                255,
+                255,
+                255,
+                0.35
+              );
 
           border-top-color:
             #ffffff;
@@ -1543,170 +1237,6 @@ export default function Checkout() {
 
           animation:
             spin 0.8s linear infinite;
-        }
-
-        .spinner-dark {
-          border:
-            2px solid
-              rgba(37,99,235,0.15);
-
-          border-top-color:
-            #2563eb;
-        }
-
-        /* =====================================================
-           VENDOR BUTTON
-        ====================================================== */
-
-        .vendor-main-button {
-          width:
-            100%;
-
-          margin-top:
-            9px;
-
-          padding:
-            13px 16px;
-
-          border-radius:
-            13px;
-
-          border:
-            1px solid #bbf7d0;
-
-          background:
-            #f0fdf4;
-
-          color:
-            #15803d;
-
-          cursor:
-            pointer;
-
-          font-size:
-            13px;
-
-          font-weight:
-            950;
-
-          transition:
-            0.15s ease;
-        }
-
-        .vendor-main-button:hover {
-          transform:
-            translateY(-1px);
-
-          background:
-            #dcfce7;
-        }
-
-        /* =====================================================
-           TRUST ROW
-        ====================================================== */
-
-        .trust-row {
-          margin-top:
-            17px;
-
-          display:
-            flex;
-
-          align-items:
-            center;
-
-          justify-content:
-            center;
-
-          gap:
-            7px;
-
-          color:
-            #64748b;
-
-          font-size:
-            10px;
-
-          font-weight:
-            800;
-
-          text-align:
-            center;
-        }
-
-        .trust-icon {
-          color:
-            #16a34a;
-
-          display:
-            flex;
-        }
-
-        /* =====================================================
-           FOOTER
-        ====================================================== */
-
-        .footer-actions {
-          display:
-            grid;
-
-          grid-template-columns:
-            1fr
-            1px
-            1fr;
-
-          align-items:
-            center;
-
-          margin-top:
-            15px;
-
-          padding-top:
-            9px;
-
-          border-top:
-            1px solid #edf2f7;
-        }
-
-        .divider {
-          width:
-            1px;
-
-          height:
-            21px;
-
-          background:
-            #dbe3ed;
-        }
-
-        .text-action {
-          border:
-            0;
-
-          background:
-            transparent;
-
-          cursor:
-            pointer;
-
-          padding:
-            8px;
-
-          font-size:
-            13px;
-
-          font-weight:
-            900;
-        }
-
-        .cancel {
-          color:
-            #ef4444;
-        }
-
-        .help {
-          color:
-            #0f172a;
         }
 
         /* =====================================================
@@ -1736,18 +1266,26 @@ export default function Checkout() {
             18px;
 
           background:
-            rgba(15,23,42,0.66);
+            rgba(
+              15,
+              23,
+              42,
+              0.64
+            );
 
           backdrop-filter:
-            blur(8px);
+            blur(7px);
 
           -webkit-backdrop-filter:
-            blur(8px);
+            blur(7px);
         }
 
         .modal {
           width:
-            min(440px, 100%);
+            min(
+              430px,
+              100%
+            );
 
           max-height:
             92vh;
@@ -1755,44 +1293,80 @@ export default function Checkout() {
           overflow-y:
             auto;
 
-          padding:
-            22px;
+          background:
+            #ffffff;
+
+          border-radius:
+            18px;
 
           border:
             1px solid #e2e8f0;
 
-          border-radius:
+          box-shadow:
+            0 30px 80px
+              rgba(
+                15,
+                23,
+                42,
+                0.28
+              );
+
+          padding:
             20px;
 
-          background:
-            #ffffff;
-
-          box-shadow:
-            0 35px 90px
-              rgba(15,23,42,0.28);
-
           animation:
-            modalIn 0.2s ease-out;
-        }
-
-        .notice-modal {
-          text-align:
-            center;
+            modalIn 0.18s
+            ease-out;
         }
 
         /* =====================================================
-           NOTICE MODAL
+           OPAY NOTICE
         ====================================================== */
+
+        .opay-notice-overlay {
+          background:
+            rgba(
+              15,
+              23,
+              42,
+              0.70
+            );
+
+          backdrop-filter:
+            blur(10px);
+
+          -webkit-backdrop-filter:
+            blur(10px);
+        }
+
+        .opay-notice-modal {
+          width:
+            min(
+              450px,
+              100%
+            );
+
+          text-align:
+            center;
+
+          padding:
+            24px;
+
+          animation:
+            opayNoticeIn
+            0.22s
+            ease-out;
+        }
 
         .notice-icon {
           width:
-            62px;
+            64px;
 
           height:
-            62px;
+            64px;
 
           margin:
-            0 auto 12px;
+            0 auto 11px;
 
           border-radius:
             50%;
@@ -1803,19 +1377,37 @@ export default function Checkout() {
           place-items:
             center;
 
+          color:
+            #b45309;
+
           background:
-            #eff6ff;
+            #fff7ed;
 
           border:
-            1px solid #dbeafe;
+            1px solid #fed7aa;
 
-          color:
-            #2563eb;
+          box-shadow:
+            0 10px 28px
+              rgba(
+                180,
+                83,
+                9,
+                0.10
+              );
         }
 
         .notice-badge {
           display:
             inline-flex;
+
+          align-items:
+            center;
+
+          justify-content:
+            center;
+
+          margin-bottom:
+            10px;
 
           padding:
             5px 9px;
@@ -1824,113 +1416,146 @@ export default function Checkout() {
             999px;
 
           background:
-            #eff6ff;
+            #fff7ed;
 
           color:
-            #2563eb;
+            #c2410c;
 
           border:
-            1px solid #dbeafe;
+            1px solid #fed7aa;
 
           font-size:
-            9px;
+            10px;
 
           font-weight:
             950;
 
           letter-spacing:
-            0.10em;
-
-          margin-bottom:
-            10px;
+            0.08em;
         }
 
-        .modal-title {
-          margin:
-            0;
-
-          color:
-            #0f172a;
-
+        .opay-notice-modal
+          .modal-title {
           font-size:
             21px;
 
-          line-height:
-            1.2;
+          margin-bottom:
+            8px;
+        }
+
+        .opay-notice-modal
+          .modal-text {
+          margin-bottom:
+            15px;
+
+          text-align:
+            left;
+        }
+
+        .opay-notice-modal
+          .modal-text strong {
+          color:
+            #0f172a;
 
           font-weight:
             950;
         }
 
-        .modal-text {
-          margin:
-            9px 0 15px;
+        .opay-caution-box {
+          display:
+            grid;
+
+          grid-template-columns:
+            36px
+            1fr;
+
+          gap:
+            10px;
+
+          align-items:
+            start;
+
+          padding:
+            13px;
+
+          border-radius:
+            13px;
+
+          background:
+            #fffbeb;
+
+          border:
+            1px solid #fde68a;
+
+          text-align:
+            left;
+        }
+
+        .opay-caution-icon {
+          width:
+            34px;
+
+          height:
+            34px;
+
+          display:
+            grid;
+
+          place-items:
+            center;
+
+          border-radius:
+            10px;
+
+          background:
+            #fef3c7;
 
           color:
-            #64748b;
+            #b45309;
+
+          font-size:
+            16px;
+
+          font-weight:
+            950;
+        }
+
+        .opay-caution-box
+          strong {
+          display:
+            block;
+
+          color:
+            #92400e;
 
           font-size:
             13px;
+
+          font-weight:
+            950;
+
+          margin-bottom:
+            3px;
+        }
+
+        .opay-caution-box
+          p {
+          margin:
+            0;
+
+          color:
+            #78716c;
+
+          font-size:
+            11px;
 
           line-height:
             1.55;
         }
 
-        .notice-list {
-          display:
-            grid;
-
-          gap:
-            8px;
-
-          text-align:
-            left;
-
-          margin:
-            14px 0;
-        }
-
-        .notice-item {
-          display:
-            flex;
-
-          align-items:
-            flex-start;
-
-          gap:
-            9px;
-
-          padding:
-            11px;
-
-          border-radius:
-            11px;
-
-          background:
-            #f8fafc;
-
-          border:
-            1px solid #edf2f7;
-
-          color:
-            #475569;
-
-          font-size:
-            11px;
-
-          line-height:
-            1.5;
-        }
-
-        .notice-check {
-          color:
-            #2563eb;
-
+        .notice-actions {
           margin-top:
-            1px;
-
-          flex-shrink:
-            0;
+            16px;
         }
 
         .notice-continue {
@@ -1941,10 +1566,10 @@ export default function Checkout() {
             0;
 
           border-radius:
-            13px;
+            12px;
 
           padding:
-            14px 16px;
+            13px 16px;
 
           background:
             linear-gradient(
@@ -1966,13 +1591,36 @@ export default function Checkout() {
             pointer;
 
           box-shadow:
-            0 13px 28px
-              rgba(37,99,235,0.22);
+            0 12px 25px
+              rgba(
+                37,
+                99,
+                235,
+                0.20
+              );
+
+          transition:
+            transform 0.15s ease,
+            box-shadow 0.15s ease;
+        }
+
+        .notice-continue:hover {
+          transform:
+            translateY(-1px);
+
+          box-shadow:
+            0 15px 30px
+              rgba(
+                37,
+                99,
+                235,
+                0.25
+              );
         }
 
         .notice-footer {
           margin-top:
-            9px;
+            10px;
 
           color:
             #94a3b8;
@@ -1981,60 +1629,11 @@ export default function Checkout() {
             10px;
 
           line-height:
-            1.4;
+            1.45;
         }
 
         /* =====================================================
-           VERIFICATION MODAL
-        ====================================================== */
-
-        .verification-modal {
-          text-align:
-            center;
-        }
-
-        .loading-circle {
-          width:
-            60px;
-
-          height:
-            60px;
-
-          margin:
-            0 auto 13px;
-
-          display:
-            grid;
-
-          place-items:
-            center;
-
-          border-radius:
-            50%;
-
-          background:
-            #eff6ff;
-
-          border:
-            1px solid #bfdbfe;
-
-          color:
-            #2563eb;
-        }
-
-        .verification-caption {
-          color:
-            #64748b;
-
-          font-size:
-            11px;
-
-          font-weight:
-            850;
-        }
-
-        /* =====================================================
-           FAILED MODAL
+           FAILED PAYMENT
         ====================================================== */
 
         .failed-modal {
@@ -2042,15 +1641,18 @@ export default function Checkout() {
             center;
         }
 
-        .failed-icon {
+        .modal-icon {
           width:
-            60px;
+            58px;
 
           height:
-            60px;
+            58px;
 
           margin:
-            0 auto 13px;
+            0 auto 12px;
+
+          border-radius:
+            50%;
 
           display:
             grid;
@@ -2058,25 +1660,47 @@ export default function Checkout() {
           place-items:
             center;
 
-          border-radius:
-            50%;
-
           background:
             #fef2f2;
-
-          border:
-            1px solid #fecaca;
 
           color:
             #dc2626;
+
+          border:
+            1px solid #fecaca;
+        }
+
+        .modal-title {
+          margin:
+            0;
+
+          color:
+            #0f172a;
+
+          font-size:
+            21px;
+
+          font-weight:
+            950;
+        }
+
+        .modal-text {
+          margin:
+            8px 0 16px;
+
+          color:
+            #64748b;
+
+          font-size:
+            13px;
+
+          line-height:
+            1.55;
         }
 
         .failed-message {
-          margin-bottom:
-            15px;
-
-          padding:
-            12px;
+          background:
+            #fef2f2;
 
           border:
             1px solid #fecaca;
@@ -2084,20 +1708,23 @@ export default function Checkout() {
           border-radius:
             12px;
 
-          background:
-            #fef2f2;
+          padding:
+            12px;
 
           color:
             #991b1b;
 
           font-size:
-            12px;
+            13px;
+
+          font-weight:
+            750;
 
           line-height:
             1.5;
 
-          font-weight:
-            800;
+          margin-bottom:
+            15px;
         }
 
         .modal-close-button {
@@ -2110,23 +1737,23 @@ export default function Checkout() {
           border-radius:
             12px;
 
-          padding:
-            13px 16px;
-
           background:
             #dc2626;
 
           color:
             #ffffff;
 
-          cursor:
-            pointer;
+          padding:
+            13px 16px;
 
           font-size:
-            13px;
+            14px;
 
           font-weight:
             950;
+
+          cursor:
+            pointer;
         }
 
         /* =====================================================
@@ -2140,11 +1767,11 @@ export default function Checkout() {
           justify-content:
             space-between;
 
-          align-items:
-            flex-start;
-
           gap:
             10px;
+
+          align-items:
+            flex-start;
         }
 
         .modal-x {
@@ -2154,20 +1781,11 @@ export default function Checkout() {
           height:
             34px;
 
-          flex-shrink:
-            0;
-
-          display:
-            grid;
-
-          place-items:
-            center;
+          border-radius:
+            50%;
 
           border:
             1px solid #e2e8f0;
-
-          border-radius:
-            50%;
 
           background:
             #f8fafc;
@@ -2180,40 +1798,46 @@ export default function Checkout() {
 
           font-size:
             18px;
+
+          display:
+            grid;
+
+          place-items:
+            center;
+
+          flex-shrink:
+            0;
         }
 
         .details-card {
-          margin:
-            12px 0 15px;
-
-          padding:
-            13px;
+          background:
+            #f8fafc;
 
           border:
             1px solid #e2e8f0;
 
           border-radius:
-            13px;
+            12px;
 
-          background:
-            #f8fafc;
+          padding:
+            12px;
+
+          margin:
+            12px 0;
         }
 
         .details-title {
-          margin-bottom:
-            9px;
-
           color:
             #0f172a;
 
           font-size:
-            11px;
+            12px;
 
           font-weight:
             950;
 
-          letter-spacing:
-            0.03em;
+          margin-bottom:
+            9px;
         }
 
         .detail-row {
@@ -2230,10 +1854,11 @@ export default function Checkout() {
             7px 0;
 
           border-bottom:
-            1px dashed #dfe7ef;
+            1px dashed
+              #e2e8f0;
 
           font-size:
-            11px;
+            12px;
         }
 
         .detail-row:last-child {
@@ -2254,7 +1879,7 @@ export default function Checkout() {
             #64748b;
 
           font-weight:
-            750;
+            700;
         }
 
         .detail-value {
@@ -2275,17 +1900,17 @@ export default function Checkout() {
           display:
             block;
 
-          margin-bottom:
-            6px;
-
           color:
             #334155;
 
           font-size:
-            11px;
+            12px;
 
           font-weight:
             900;
+
+          margin-bottom:
+            7px;
         }
 
         .text-input {
@@ -2295,20 +1920,8 @@ export default function Checkout() {
           box-sizing:
             border-box;
 
-          margin-bottom:
-            12px;
-
-          padding:
-            11px 12px;
-
           border:
             1px solid #cbd5e1;
-
-          border-radius:
-            10px;
-
-          outline:
-            none;
 
           background:
             #ffffff;
@@ -2316,7 +1929,19 @@ export default function Checkout() {
           color:
             #0f172a;
 
+          border-radius:
+            10px;
+
+          padding:
+            11px 12px;
+
           font-size:
+            13px;
+
+          outline:
+            none;
+
+          margin-bottom:
             12px;
         }
 
@@ -2326,52 +1951,57 @@ export default function Checkout() {
 
           box-shadow:
             0 0 0 3px
-              rgba(37,99,235,0.10);
+              rgba(
+                37,
+                99,
+                235,
+                0.1
+              );
         }
 
         .receipt-box {
-          margin-top:
-            4px;
-
-          padding:
-            13px;
-
           border:
             1.5px dashed #93c5fd;
 
-          border-radius:
-            13px;
-
           background:
             #eff6ff;
+
+          border-radius:
+            12px;
+
+          padding:
+            14px;
+
+          margin-top:
+            5px;
         }
 
         .receipt-box-title {
-          margin-bottom:
-            4px;
-
           color:
             #1e40af;
 
           font-size:
-            11px;
+            12px;
 
           font-weight:
             950;
+
+          margin-bottom:
+            5px;
         }
 
         .receipt-box-text {
-          margin-bottom:
-            9px;
-
           color:
             #64748b;
 
           font-size:
-            10px;
+            11px;
 
           line-height:
-            1.5;
+            1.45;
+
+          margin-bottom:
+            10px;
         }
 
         .receipt-input {
@@ -2379,7 +2009,7 @@ export default function Checkout() {
             100%;
 
           font-size:
-            11px;
+            12px;
         }
 
         .receipt-file {
@@ -2387,7 +2017,7 @@ export default function Checkout() {
             8px;
 
           padding:
-            8px 9px;
+            8px 10px;
 
           border-radius:
             8px;
@@ -2399,7 +2029,7 @@ export default function Checkout() {
             #334155;
 
           font-size:
-            10px;
+            11px;
 
           font-weight:
             800;
@@ -2413,10 +2043,7 @@ export default function Checkout() {
             100%;
 
           margin-top:
-            13px;
-
-          padding:
-            13px 16px;
+            14px;
 
           border:
             0;
@@ -2434,18 +2061,26 @@ export default function Checkout() {
           color:
             #ffffff;
 
-          cursor:
-            pointer;
+          padding:
+            14px 16px;
 
           font-size:
-            13px;
+            14px;
 
           font-weight:
             950;
 
+          cursor:
+            pointer;
+
           box-shadow:
-            0 13px 27px
-              rgba(22,163,74,0.18);
+            0 14px 28px
+              rgba(
+                22,
+                163,
+                74,
+                0.2
+              );
         }
 
         .vendor-submit:disabled {
@@ -2458,19 +2093,86 @@ export default function Checkout() {
 
         .whatsapp-note {
           margin-top:
-            9px;
-
-          text-align:
-            center;
+            10px;
 
           color:
             #94a3b8;
 
           font-size:
-            9px;
+            10px;
 
           line-height:
             1.5;
+
+          text-align:
+            center;
+        }
+
+        /* =====================================================
+           FOOTER ACTIONS
+        ====================================================== */
+
+        .footer-actions {
+          display:
+            grid;
+
+          grid-template-columns:
+            1fr
+            1px
+            1fr;
+
+          align-items:
+            center;
+
+          border-top:
+            1px solid #edf2f7;
+
+          padding-top:
+            13px;
+
+          margin-top:
+            16px;
+        }
+
+        .divider {
+          width:
+            1px;
+
+          height:
+            22px;
+
+          background:
+            #dbe3ed;
+        }
+
+        .text-action {
+          border:
+            0;
+
+          background:
+            transparent;
+
+          cursor:
+            pointer;
+
+          font-size:
+            14px;
+
+          font-weight:
+            900;
+
+          padding:
+            8px;
+        }
+
+        .cancel {
+          color:
+            #ef4444;
+        }
+
+        .help {
+          color:
+            #111827;
         }
 
         /* =====================================================
@@ -2490,7 +2192,27 @@ export default function Checkout() {
               0;
 
             transform:
-              translateY(8px)
+              scale(0.96)
+              translateY(6px);
+          }
+
+          to {
+            opacity:
+              1;
+
+            transform:
+              scale(1)
+              translateY(0);
+          }
+        }
+
+        @keyframes opayNoticeIn {
+          from {
+            opacity:
+              0;
+
+            transform:
+              translateY(10px)
               scale(0.97);
           }
 
@@ -2505,38 +2227,30 @@ export default function Checkout() {
         }
 
         /* =====================================================
-           MOBILE
+           RESPONSIVE
         ====================================================== */
 
         @media (max-width: 480px) {
 
           .checkout-shell {
             padding:
-              8px 7px 24px;
+              10px 8px 25px;
           }
 
           .pay-screen {
             border-radius:
-              18px;
-          }
+              14px;
 
-          .payment-content {
             padding:
-              17px;
+              15px;
           }
 
-          .hero-title {
+          .account-number {
             font-size:
-              25px;
+              24px;
           }
 
-          .account-number-button {
-            font-size:
-              23px;
-          }
-
-          .moniepoint-mark,
-          .moniepoint-fallback {
+          .nomba-mfb-mark {
             width:
               44px;
 
@@ -2547,21 +2261,16 @@ export default function Checkout() {
               11px;
           }
 
-          .step-item {
+          .opay-notice-modal {
             padding:
-              9px 4px;
+              20px;
           }
 
-          .step-text {
+          .opay-notice-modal
+            .modal-title {
             font-size:
-              9px;
+              19px;
           }
-
-          .modal {
-            padding:
-              18px;
-          }
-
         }
 
       `}</style>
@@ -2574,422 +2283,310 @@ export default function Checkout() {
 
         <section
           className="pay-screen"
-          aria-label="ElitePay bank transfer checkout"
+          aria-label="Bank transfer checkout"
         >
 
-          <div className="top-gradient" />
+          <img
+            className="checkout-logo"
+            src="/elitepay-logo.png"
+            alt="ElitePay"
+          />
 
-          <div className="payment-content">
+          <div className="checkout-badge">
+            SECURE BANK TRANSFER
+          </div>
 
-            {/* BRAND */}
+          <div className="bank-illustration">
 
-            <div className="brand-area">
-
-              <img
-                className="checkout-logo"
-                src="/elitepay-logo.png"
-                alt="ElitePay"
+            <svg
+              width="84"
+              height="64"
+              viewBox="0 0 84 64"
+              fill="none"
+              aria-hidden="true"
+            >
+              <path
+                d="M42 4 14 18v6h56v-6L42 4Z"
+                fill="#cbd5e1"
               />
 
-              <div className="checkout-badge">
-
-                <span className="brand-status-dot" />
-
-                SECURE PAYMENT
-
-              </div>
-
-            </div>
-
-            {/* HERO */}
-
-            <h1 className="hero-title">
-
-              Pay{' '}
-
-              <span className="currency">
-                NGN {DISPLAY_PRICE.toLocaleString()}
-              </span>
-
-            </h1>
-
-            <p className="hero-subtitle">
-
-              Complete your payment by
-              transferring the exact amount
-              to the account below.
-
-            </p>
-
-            <div
-              style={{
-                textAlign:
-                  'center',
-              }}
-            >
-
-              <button
-                className="copy-amount"
-                onClick={() =>
-                  copyText(
-                    'amount',
-                    String(DISPLAY_PRICE)
-                  )
-                }
-                type="button"
-              >
-
-                <CopyIcon
-                  size={14}
-                />
-
-                Copy payment amount
-
-              </button>
-
-            </div>
-
-            {/* STEPS */}
-
-            <div className="step-strip">
-
-              <div className="step-item">
-
-                <div className="step-number">
-                  1
-                </div>
-
-                <div className="step-text">
-                  Copy details
-                </div>
-
-              </div>
-
-              <div className="step-item">
-
-                <div className="step-number">
-                  2
-                </div>
-
-                <div className="step-text">
-                  Make transfer
-                </div>
-
-              </div>
-
-              <div className="step-item">
-
-                <div className="step-number">
-                  3
-                </div>
-
-                <div className="step-text">
-                  Confirm payment
-                </div>
-
-              </div>
-
-            </div>
-
-            {/* INSTRUCTION */}
-
-            <div className="instruction">
-
-              <div className="instruction-icon">
-
-                <ShieldIcon
-                  size={18}
-                />
-
-              </div>
-
-              <div className="instruction-text">
-
-                <strong>
-                  Transfer exactly NGN {CODE_PRICE.toLocaleString()}
-                </strong>
-
-                Ensure that the amount you send
-                matches the amount shown above.
-
-              </div>
-
-            </div>
-
-            {/* ACCOUNT */}
-
-            <div className="account-card">
-
-              <div className="account-top">
-
-                <div className="bank-row">
-
-                  <MoniepointMark />
-
-                  <div className="bank-info">
-
-                    <span className="bank-label">
-                      Bank name
-                    </span>
-
-                    <div className="bank-name">
-                      {BANK_NAME}
-                    </div>
-
-                  </div>
-
-                </div>
-
-                <div className="account-number-area">
-
-                  <div className="account-number-label">
-                    Account number
-                  </div>
-
-                  <button
-                    className="account-number-button"
-                    onClick={() =>
-                      copyText(
-                        'account number',
-                        ACCOUNT_NUMBER
-                      )
-                    }
-                    type="button"
-                    aria-label="Copy account number"
-                  >
-
-                    {ACCOUNT_NUMBER}
-
-                    {copied ===
-                    'account number' ? (
-                      <CheckIcon
-                        size={18}
-                      />
-                    ) : (
-                      <CopyIcon
-                        size={18}
-                      />
-                    )}
-
-                  </button>
-
-                  <div className="account-name">
-
-                    <span className="account-name-label">
-                      Account name
-                    </span>
-
-                    {ACCOUNT_NAME}
-
-                  </div>
-
-                </div>
-
-              </div>
-
-              <div className="account-footer">
-
-                <span className="warning-dot">
-                  !
-                </span>
-
-                <span>
-                  Verify the account name and number
-                  before sending your payment.
-                </span>
-
-              </div>
-
-            </div>
-
-            {/* COPY FEEDBACK */}
-
-            <div className="copy-feedback">
-
-              {copied
-                ? (
-                  <span
-                    style={{
-                      display:
-                        'inline-flex',
-                      alignItems:
-                        'center',
-                      gap:
-                        '5px',
-                    }}
-                  >
-
-                    <CheckIcon
-                      size={14}
-                    />
-
-                    {copied} copied
-
-                  </span>
+              <path
+                d="
+                  M20 28h8v22h-8V28Zm18 0h8v22h-8V28Zm18 0h8v22h-8V28Z
+                "
+                fill="#94a3b8"
+              />
+
+              <path
+                d="M14 52h56v7H14v-7Z"
+                fill="#cbd5e1"
+              />
+
+              <circle
+                cx="24"
+                cy="49"
+                r="10"
+                fill="#d9e2ec"
+                stroke="#94a3b8"
+                strokeWidth="2"
+              />
+
+              <circle
+                cx="60"
+                cy="49"
+                r="10"
+                fill="#d9e2ec"
+                stroke="#94a3b8"
+                strokeWidth="2"
+              />
+            </svg>
+
+          </div>
+
+          <h1 className="pay-title">
+            Pay NGN {DISPLAY_PRICE.toLocaleString()}
+          </h1>
+
+          <p className="pay-subtitle">
+            Transfer the exact amount to the account below
+          </p>
+
+          <div className="copy-row">
+
+            <button
+              className="copy-amount"
+              onClick={() =>
+                copyText(
+                  'amount',
+                  String(DISPLAY_PRICE)
                 )
-                : null}
+              }
+              type="button"
+            >
+              <CopyIcon />
+              Copy amount
+            </button>
 
-            </div>
+          </div>
 
-            {/* TIMER */}
+          <div className="instruction">
 
-            <div className="timer-card">
+            Transfer exactly{' '}
 
-              <div className="timer-top">
+            <strong>
+              NGN {CODE_PRICE.toLocaleString()}
+            </strong>{' '}
 
-                <span className="timer-label">
-                  PAYMENT WINDOW
-                </span>
+            to the bank account below.
 
-                <span className="timer-value">
-                  {minutes}:{seconds}
-                </span>
+          </div>
 
-              </div>
+          <div className="account-card">
 
-              <div className="progress-wrap">
+            <div className="account-main">
+
+              <div className="bank-row">
+
+                <NombaMfbMark />
 
                 <div
-                  className="progress-bar"
                   style={{
-                    width:
-                      `${progressPercentage}%`,
+                    textAlign:
+                      'left',
                   }}
-                />
-
-              </div>
-
-              <div className="timer-note">
-
-                {countdown > 0
-                  ? 'Complete your payment before the timer expires.'
-                  : 'Payment window expired. Restart checkout.'}
-
-              </div>
-
-            </div>
-
-            {/* CONFIRM */}
-
-            <div className="confirm-section">
-
-              <p className="confirm-note">
-
-                After you complete the transfer,
-                click the button below to check
-                your transaction.
-
-              </p>
-
-              <button
-                className="confirm-button"
-                onClick={
-                  confirmPayment
-                }
-                disabled={
-                  checkingPayment ||
-                  countdown === 0
-                }
-                type="button"
-              >
-
-                {checkingPayment ? (
-
-                  <span className="button-content">
-
-                    <Spinner />
-
-                    Checking payment...
-
+                >
+                  <span className="bank-label">
+                    Bank name
                   </span>
 
-                ) : (
+                  <div className="bank-name">
+                    {BANK_NAME}
+                  </div>
+                </div>
 
-                  'I have made payment'
+              </div>
 
-                )}
+              <div className="account-number-wrap">
 
-              </button>
+                <div className="account-number-label">
+                  Account number
+                </div>
 
-              <button
-                className="vendor-main-button"
-                onClick={() =>
-                  setVendorModal(
-                    true
-                  )
-                }
-                type="button"
-              >
+                <button
+                  className="account-number"
+                  onClick={() =>
+                    copyText(
+                      'account number',
+                      ACCOUNT_NUMBER
+                    )
+                  }
+                  type="button"
+                >
 
-                Need help? Contact Vendor
+                  {ACCOUNT_NUMBER}
 
-              </button>
+                  <CopyIcon
+                    size={18}
+                  />
+
+                </button>
+
+              </div>
+
+              <div className="account-name">
+                {ACCOUNT_NAME}
+              </div>
 
             </div>
 
-            {/* TRUST */}
+            <div className="warning-footer">
 
-            <div className="trust-row">
+              <span className="minus">
+                -
+              </span>
 
-              <span className="trust-icon">
+              <span>
+                Do not save or reuse this account number.
+              </span>
 
-                <ShieldIcon
-                  size={16}
-                />
+            </div>
+
+          </div>
+
+          <div className="copied">
+            {copied
+              ? `${copied} copied`
+              : ''}
+          </div>
+
+          <div className="progress-section">
+
+            <div className="progress-label">
+
+              <span>
+                Payment window
+              </span>
+
+              <span>
+                {minutes}:{seconds}
+              </span>
+
+            </div>
+
+            <div className="progress-wrap">
+
+              <div
+                className="progress-bar"
+                style={{
+                  width:
+                    `${progressPercentage}%`,
+                }}
+              />
+
+            </div>
+
+            <div className="timer">
+
+              {countdown > 0
+                ? `Payment window: ${minutes}:${seconds}`
+                : 'Payment window expired'}
+
+            </div>
+
+          </div>
+
+          <div className="confirm-note">
+
+            After transferring, click
+            “I have made payment”
+            to check your transaction.
+
+          </div>
+
+          <button
+            className="confirm-button"
+            onClick={
+              confirmPayment
+            }
+            disabled={
+              checkingPayment ||
+              countdown === 0
+            }
+            type="button"
+          >
+
+            {checkingPayment ? (
+
+              <span className="button-content">
+
+                <Spinner />
+
+                Verifying payment...
 
               </span>
 
-              Payment details are displayed
-              securely on this checkout page.
+            ) : (
 
-            </div>
+              'I have made payment'
 
-            {/* FOOTER */}
+            )}
 
-            <div className="footer-actions">
+          </button>
 
-              <button
-                className="text-action cancel"
-                onClick={() =>
-                  router.push(
-                    '/buy-code'
-                  )
-                }
-                type="button"
-              >
-                Cancel
-              </button>
+          <button
+            className="vendor-main-button"
+            onClick={() =>
+              setVendorModal(
+                true
+              )
+            }
+            type="button"
+          >
+            Contact Vendor
+          </button>
 
-              <span className="divider" />
+          <div className="footer-actions">
 
-              <button
-                className="text-action help"
-                onClick={() => {
+            <button
+              className="text-action cancel"
+              onClick={() =>
+                router.push(
+                  '/buy-code'
+                )
+              }
+              type="button"
+            >
+              Cancel
+            </button>
 
-                  const helpMessage =
-                    `Hello, I need help with my ElitePay payment.\n\n` +
-                    `Name: ${
-                      name ||
-                      'Not provided'
-                    }\n` +
-                    `Phone: ${
-                      phone ||
-                      'Not provided'
-                    }\n` +
-                    `Amount: NGN ${CODE_PRICE.toLocaleString()}\n` +
-                    `Bank: ${BANK_NAME}`;
+            <span className="divider" />
 
-                  openWhatsApp(
+            <button
+              className="text-action help"
+              onClick={() => {
+
+                const helpMessage =
+                  `Hello, I need help with my ElitePay payment.\n\n` +
+                  `Name: ${
+                    name ||
+                    'Not provided'
+                  }\n` +
+                  `Phone: ${
+                    phone ||
+                    'Not provided'
+                  }\n` +
+                  `Amount: NGN ${CODE_PRICE.toLocaleString()}`;
+
+                window.location.href =
+                  buildWhatsAppUrl(
                     helpMessage
                   );
 
-                }}
-                type="button"
-              >
-                Help?
-              </button>
-
-            </div>
+              }}
+              type="button"
+            >
+              Help?
+            </button>
 
           </div>
 
@@ -2998,20 +2595,18 @@ export default function Checkout() {
       </div>
 
       {/* =====================================================
-          PAYMENT SAFETY NOTICE
+          OPAY CAUTION POPUP
       ====================================================== */}
 
-      {showPaymentNotice && (
+      {showOpayNotice && (
 
-        <div className="modal-overlay">
+        <div className="modal-overlay opay-notice-overlay">
 
-          <div className="modal notice-modal">
+          <div className="modal opay-notice-modal">
 
             <div className="notice-icon">
 
-              <ShieldIcon
-                size={27}
-              />
+              <AlertIcon size={26} />
 
             </div>
 
@@ -3020,89 +2615,73 @@ export default function Checkout() {
             </div>
 
             <h2 className="modal-title">
-              Before You Make Payment
+              Important Payment Information
             </h2>
 
             <p className="modal-text">
 
-              Please carefully verify the payment
-              details before completing your transfer.
+              Payments made through{' '}
+
+              <strong>
+                OPay
+              </strong>{' '}
+
+              or some mobile-wallet channels
+              may occasionally experience
+              delays or unsuccessful confirmation
+              because of network congestion,
+              connectivity issues, or payment-routing
+              delays.
 
             </p>
 
-            <div className="notice-list">
+            <div className="opay-caution-box">
 
-              <div className="notice-item">
-
-                <span className="notice-check">
-                  <CheckIcon size={16} />
-                </span>
-
-                Transfer exactly
-                NGN {CODE_PRICE.toLocaleString()}.
-
+              <div className="opay-caution-icon">
+                !
               </div>
 
-              <div className="notice-item">
+              <div>
 
-                <span className="notice-check">
-                  <CheckIcon size={16} />
-                </span>
-
-                Confirm the account number:
-                {` `}
                 <strong>
-                  {ACCOUNT_NUMBER}
+                  OPay can still be used
                 </strong>
 
-              </div>
+                <p>
 
-              <div className="notice-item">
+                  This is only a precautionary notice.
+                  You may continue using OPay to make
+                  your payment. If your transaction is
+                  not confirmed, please wait a little
+                  while or try another supported
+                  banking channel.
 
-                <span className="notice-check">
-                  <CheckIcon size={16} />
-                </span>
-
-                Confirm the account name:
-                {` `}
-                <strong>
-                  {ACCOUNT_NAME}
-                </strong>
-
-              </div>
-
-              <div className="notice-item">
-
-                <span className="notice-check">
-                  <CheckIcon size={16} />
-                </span>
-
-                Bank:
-                {` `}
-                <strong>
-                  {BANK_NAME}
-                </strong>
+                </p>
 
               </div>
 
             </div>
 
-            <button
-              type="button"
-              className="notice-continue"
-              onClick={() =>
-                setShowPaymentNotice(
-                  false
-                )
-              }
-            >
-              I Understand & Continue
-            </button>
+            <div className="notice-actions">
+
+              <button
+                type="button"
+                className="notice-continue"
+                onClick={() =>
+                  setShowOpayNotice(
+                    false
+                  )
+                }
+              >
+                I Understand & Continue
+              </button>
+
+            </div>
 
             <div className="notice-footer">
 
-              Always verify the displayed
-              payment information before sending funds.
+              Please make sure you transfer the
+              exact amount shown on this checkout page.
 
             </div>
 
@@ -3113,21 +2692,29 @@ export default function Checkout() {
       )}
 
       {/* =====================================================
-          PAYMENT VERIFICATION
+          PAYMENT VERIFICATION LOADING MODAL
       ====================================================== */}
 
       {checkingPayment && (
 
         <div className="modal-overlay">
 
-          <div className="modal verification-modal">
+          <div className="modal failed-modal">
 
-            <div className="loading-circle">
+            <div
+              className="modal-icon"
+              style={{
+                background:
+                  '#eff6ff',
 
-              <Spinner
-                dark
-              />
+                borderColor:
+                  '#bfdbfe',
 
+                color:
+                  '#2563eb',
+              }}
+            >
+              <Spinner />
             </div>
 
             <h2 className="modal-title">
@@ -3136,15 +2723,25 @@ export default function Checkout() {
 
             <p className="modal-text">
 
-              Please wait while your transaction
-              status is being checked.
+              We are checking your transaction.
+              Please do not close or refresh
+              this page.
 
             </p>
 
-            <div className="verification-caption">
+            <div
+              style={{
+                color:
+                  '#64748b',
 
+                fontSize:
+                  '12px',
+
+                fontWeight:
+                  800,
+              }}
+            >
               Verifying transaction...
-
             </div>
 
           </div>
@@ -3154,7 +2751,7 @@ export default function Checkout() {
       )}
 
       {/* =====================================================
-          PAYMENT FAILED
+          PAYMENT FAILED MODAL
       ====================================================== */}
 
       {paymentFailed && (
@@ -3163,11 +2760,9 @@ export default function Checkout() {
 
           <div className="modal failed-modal">
 
-            <div className="failed-icon">
+            <div className="modal-icon">
 
-              <AlertIcon
-                size={26}
-              />
+              <AlertIcon size={25} />
 
             </div>
 
@@ -3177,7 +2772,7 @@ export default function Checkout() {
 
             <p className="modal-text">
 
-              We could not confirm the payment
+              We could not confirm your payment
               at this time.
 
             </p>
@@ -3185,8 +2780,8 @@ export default function Checkout() {
             <div className="failed-message">
 
               Your transaction was unsuccessful.
-              Please make the payment again and
-              ensure the exact amount is transferred.
+              Please click the button below to
+              make your payment again.
 
             </div>
 
@@ -3197,7 +2792,7 @@ export default function Checkout() {
               }
               type="button"
             >
-              Make Payment Again
+              Click here to make your payment again
             </button>
 
           </div>
@@ -3207,7 +2802,7 @@ export default function Checkout() {
       )}
 
       {/* =====================================================
-          CONTACT VENDOR
+          CONTACT VENDOR MODAL
       ====================================================== */}
 
       {vendorModal && (
@@ -3240,7 +2835,7 @@ export default function Checkout() {
 
                 <p className="modal-text">
 
-                  Enter your details and
+                  Confirm your details and
                   attach your payment receipt
                   before contacting the vendor.
 
@@ -3266,7 +2861,7 @@ export default function Checkout() {
             <div className="details-card">
 
               <div className="details-title">
-                PAYMENT DETAILS
+                YOUR DETAILS
               </div>
 
               <div className="detail-row">
@@ -3332,25 +2927,13 @@ export default function Checkout() {
 
               </div>
 
-              <div className="detail-row">
-
-                <span className="detail-label">
-                  Account Name
-                </span>
-
-                <span className="detail-value">
-                  {ACCOUNT_NAME}
-                </span>
-
-              </div>
-
             </div>
 
             <label
               className="field-label"
               htmlFor="vendor-name"
             >
-              Your name
+              Confirm your name
             </label>
 
             <input
@@ -3370,7 +2953,7 @@ export default function Checkout() {
               className="field-label"
               htmlFor="vendor-phone"
             >
-              Phone number
+              Confirm your phone number
             </label>
 
             <input
@@ -3389,14 +2972,15 @@ export default function Checkout() {
             <div className="receipt-box">
 
               <div className="receipt-box-title">
-                Attach Payment Receipt
+                Attach payment receipt
               </div>
 
               <div className="receipt-box-text">
 
                 Select your payment screenshot
-                or receipt. You can then send
-                the same receipt in WhatsApp.
+                or receipt. You will be asked
+                to attach the same receipt inside
+                WhatsApp before sending.
 
               </div>
 
@@ -3414,7 +2998,7 @@ export default function Checkout() {
                 <div className="receipt-file">
 
                   Attached:
-                  {` `}
+                  {' '}
                   {receipt.name}
 
                 </div>
@@ -3455,8 +3039,9 @@ export default function Checkout() {
 
             <div className="whatsapp-note">
 
-              Your transaction details will be
-              pre-filled in WhatsApp.
+              Your name, phone number, payment amount
+              and transaction details will be pre-filled
+              in the WhatsApp chat.
 
             </div>
 
