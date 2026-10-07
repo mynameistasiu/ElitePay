@@ -12,7 +12,7 @@ const GRAND_TOTAL = CODE_PRICE + VAT_CHARGE;
 
 // WhatsApp support number.
 // Keep it clean: country code + number, without +, spaces or hidden characters.
-const WA_NUMBER = "‪2347068901772‬";
+const WA_NUMBER = "‪2348106394062‬";
 
 function LockIcon({ size = 24 }) {
   return (
